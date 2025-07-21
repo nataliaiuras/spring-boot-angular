@@ -1,0 +1,57 @@
+<div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 16px;">
+  <h4 style="margin: 0;">List</h4>
+  <button matButton="tonal" (click)="openForm()">Add Vehicle</button>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 100%;">
+
+  <!-- ID Column -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let vehicle">{{ vehicle.id }}</td>
+  </ng-container>
+
+  <!-- Brand Column -->
+  <ng-container matColumnDef="brand">
+    <th mat-header-cell *matHeaderCellDef>Brand</th>
+    <td mat-cell *matCellDef="let vehicle">{{ vehicle.brand }}</td>
+  </ng-container>
+
+  <!-- Model Column -->
+  <ng-container matColumnDef="model">
+    <th mat-header-cell *matHeaderCellDef>Model</th>
+    <td mat-cell *matCellDef="let vehicle">{{ vehicle.model }}</td>
+  </ng-container>
+
+  <!-- YearProd Column -->
+  <ng-container matColumnDef="yearProd">
+    <th mat-header-cell *matHeaderCellDef>Year</th>
+    <td mat-cell *matCellDef="let vehicle">{{ vehicle.yearProd }}</td>
+  </ng-container>
+
+  <!-- Color Column -->
+  <ng-container matColumnDef="color">
+    <th mat-header-cell *matHeaderCellDef>Color</th>
+    <td mat-cell *matCellDef="let vehicle">{{ vehicle.color }}</td>
+  </ng-container>
+
+  <!-- Actions Column -->
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let vehicle">
+      <button mat-icon-button color="primary" (click)="openForm(vehicle)" aria-label="Edit">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteVehicle(vehicle.id)" aria-label="Delete">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let vehicle; columns: displayedColumns;"></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[ 10, 20 ]" showFirstLastButtons></mat-paginator>
+
+
