@@ -1,6 +1,8 @@
 package com.example.controllers;
 
 import com.example.dtos.AccountDto;
+import com.example.dtos.TransactionDto;
+import com.example.dtos.overview.AccountOverviewDto;
 import com.example.services.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -21,38 +23,38 @@ public class AccountController {
     }
 
     @GetMapping(value = {"/", ""})
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<List<AccountDto>> getAllAccounts() {
+   // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<List<AccountOverviewDto>> getAllAccounts() {
         return ResponseEntity.ok(accountService.allAccount());
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> createAccount(@Valid @RequestBody AccountDto accountDto) {
         AccountDto createdAccount = accountService.createAccount(accountDto);
         return ResponseEntity.created(URI.create("/" + accountDto.getId())).body(createdAccount);
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> getAccount(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.getAccount(id));
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+  //  @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> updateAccount(@PathVariable Long id, @Valid @RequestBody AccountDto accountDto) {
         return ResponseEntity.ok(accountService.updateAccount(id, accountDto));
     }
 
     @PatchMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+  //  @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> patchAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
         return ResponseEntity.ok(accountService.patchAccount(id, accountDto));
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> deleteAccount(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.deleteAccount(id));
     }

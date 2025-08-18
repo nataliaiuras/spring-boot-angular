@@ -22,38 +22,38 @@ public class AddressController {
     }
 
     @GetMapping(value = {"/", ""})
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+  //  @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<AddressDto>> getAllAddresses() {
         return ResponseEntity.ok(addressService.allAddress());
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AddressDto> createAddresses(@Valid @RequestBody AddressDto addressDto) {
         AddressDto createdAddress = addressService.createAddress(addressDto);
         return ResponseEntity.created(URI.create("/" + addressDto.getId())).body(createdAddress);
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+  //  @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AddressDto> getAddresses(@PathVariable Long id) {
         return ResponseEntity.ok(addressService.getAddress(id));
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+  //  @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AddressDto> updateAddresses(@PathVariable Long id, @Valid @RequestBody AddressDto addressDto) {
         return ResponseEntity.ok(addressService.updateAddress(id, addressDto));
     }
 
     @PatchMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+  //  @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AddressDto> patchAddresses(@PathVariable Long id, @RequestBody AddressDto addressDto) {
         return ResponseEntity.ok(addressService.patchAddress(id, addressDto));
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AddressDto> deleteAddresses(@PathVariable Long id) {
         return ResponseEntity.ok(addressService.deleteAddress(id));
     }

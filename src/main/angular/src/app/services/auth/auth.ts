@@ -40,25 +40,12 @@ export class AuthService {
           if (response.token) {
             sessionStorage.setItem('token', response.token);
             this.isAuthenticatedSubject.next(true);
-            // Fetch user profile after successful login
             this.getUserProfile();
           }
           return response;
         })
       );
   }
-
-
-  /*  login(credentials: {username: string, password: string}): Observable<any> {
-      return this.http.post(`${this.baseUrl}/auth/login`, {
-        username: credentials.username,
-        password: credentials.password
-      });
-    }*/
-
-  /* login(credentials: any): Observable<any> {
-     return this.http.post(`${this.baseUrl}/login`, credentials, { responseType: 'text' });
-   }*/
 
   isAuthenticated(): Observable<boolean> {
     return this.isAuthenticatedSubject.asObservable();
@@ -68,9 +55,6 @@ export class AuthService {
     return sessionStorage.getItem('token');
   }
 
-/*  logout(): Observable<any> {
-    return this.http.post(`${this.baseUrl}/auth/logout`, {});
-  }*/
 
   logout(): void {
     sessionStorage.removeItem('token');
@@ -92,7 +76,6 @@ export class AuthService {
         },
         error: (error) => {
           console.error('Error fetching user profile:', error);
-          // If there's an error (e.g., token expired), log out the user
           if (error.status === 401) {
             this.logout();
           }

@@ -1,9 +1,12 @@
 package com.example.dtos;
 
+
 import com.example.models.Account;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,15 +17,16 @@ import java.util.Date;
 public class CardDto {
 
     private Long id;
-
     private String cardNumber;
-
     private String cardHolder;
-
-    private Date validThru;
-
+    private LocalDate validThru;
+    @JsonSerialize(as = Integer.class)
     private int cvvCode;
-
+    @JsonSerialize(as = Integer.class)
     private int pin;
+    private Account account;
+    private Instant createdDate;
+    private Instant lastModifiedDate;
+    private Long version;
 
 }

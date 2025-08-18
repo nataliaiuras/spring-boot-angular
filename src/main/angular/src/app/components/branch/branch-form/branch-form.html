@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>{{ data ? 'Edit Branch' : 'Add Branch' }}</h2>
+
+<form [formGroup]="branchForm" (ngSubmit)="onSubmit()">
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name"/>
+    @if (branchForm.controls['name'].hasError('required')) {
+      <mat-error>Brand is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Bic Code</mat-label>
+    <input matInput formControlName="bicCode"/>
+    @if (branchForm.controls['bicCode'].hasError('required')) {
+      <mat-error>Model is required</mat-error>
+    }
+  </mat-form-field>
+
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Swift Code</mat-label>
+    <input matInput type="swiftCode" formControlName="swiftCode"/>
+    @if (branchForm.controls['swiftCode'].hasError('required')) {
+      <mat-error>Year is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email"/>
+    @if (branchForm.controls['email'].hasError('required')) {
+      <mat-error>Model is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Telephone Number</mat-label>
+    <input matInput formControlName="telephoneNumber"/>
+    @if (branchForm.controls['telephoneNumber'].hasError('required')) {
+      <mat-error>Model is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Address</mat-label>
+    <mat-select formControlName="address">
+      <mat-option value="White">White</mat-option>
+      <mat-option value="Black">Black</mat-option>
+      <mat-option value="Gray">Gray</mat-option>
+      <mat-option value="Red">Red</mat-option>
+      <mat-option value="Blue">Blue</mat-option>
+      <mat-option value="Other">Other</mat-option>
+    </mat-select>
+    @if (branchForm.controls['address'].hasError('required')) {
+      <mat-error>Color is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="branchForm.invalid">
+      Save
+    </button>
+  </mat-dialog-actions>
+</form>

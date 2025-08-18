@@ -3,7 +3,9 @@ package com.example.dtos;
 import com.example.models.Branch;
 import lombok.*;
 
-import java.util.List;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,15 +16,11 @@ import java.util.List;
 public class BankDto {
 
     private Long id;
-
     private String name;
-
-    private String telephoneNumber;
-
-    private String email;
-
     private String website;
-
-    private List<Branch> branches;
+    private Set<Branch> branches = new HashSet<>();
+    private Instant createdDate;
+    private Instant lastModifiedDate;
+    private Long version;
 
 }
