@@ -1,11 +1,10 @@
 package com.example.mapers;
 
 import com.example.dtos.BranchDto;
+import com.example.dtos.overview.BranchOverviewDto;
 import com.example.models.Branch;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -20,6 +19,9 @@ public interface BranchMapper {
 
     void updateBranch(@MappingTarget Branch target, Branch source);
 
+    BranchOverviewDto toBranchOverviewDto(Branch branch);
+
+    List<BranchOverviewDto> toBranchOverviewDtos(List<Branch> branches);
 
 
 }

@@ -1,6 +1,8 @@
 package com.example.services;
 
 import com.example.dtos.AccountDto;
+import com.example.dtos.CustomerDto;
+import com.example.dtos.overview.AccountOverviewDto;
 import com.example.exceptions.AppException;
 import com.example.mapers.AccountMapper;
 import com.example.models.Account;
@@ -22,8 +24,8 @@ public class AccountService {
         this.accountMapper = accountMapper;
     }
 
-    public List<AccountDto> allAccount() {
-        return accountMapper.toAccountDtos(accountRepository.findAll());
+    public List<AccountOverviewDto> allAccount() {
+        return accountMapper.toAccountOverviewDtos(accountRepository.findAll());
     }
 
     public AccountDto createAccount(@Valid AccountDto accountDto) {
@@ -55,7 +57,7 @@ public class AccountService {
         if (accountDto.getIbanCode() != null) {
             account.setIbanCode(accountDto.getIbanCode());
         }
-        if (accountDto.getBalance() != 0) {
+        if (accountDto.getBalance().compareTo(account.getBalance()) != 0) {
             account.setBalance(accountDto.getBalance());
         }
 
@@ -67,4 +69,9 @@ public class AccountService {
         accountRepository.deleteById(id);
         return accountDto;
     }
+
+    public CustomerDto getCustomer(Long customerId) {
+        return null;
+    }
+
 }

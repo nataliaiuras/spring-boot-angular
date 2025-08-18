@@ -1,6 +1,7 @@
 package com.example.services;
 
 import com.example.dtos.BranchDto;
+import com.example.dtos.overview.BranchOverviewDto;
 import com.example.exceptions.AppException;
 import com.example.mapers.BranchMapper;
 import com.example.models.Branch;
@@ -22,8 +23,8 @@ public class BranchService {
         this.branchMapper = branchMapper;
     }
 
-    public List<BranchDto> allBranches() {
-        return branchMapper.toBranchDtos(branchRepository.findAll());
+    public List<BranchOverviewDto> allBranches() {
+        return branchMapper.toBranchOverviewDtos(branchRepository.findAll());
     }
 
     public BranchDto createBranch(@Valid BranchDto branchDto) {
@@ -51,9 +52,6 @@ public class BranchService {
         }
         if (branchDto.getBicCode() != null) {
             branch.setBicCode(branchDto.getBicCode());
-        }
-        if (branchDto.getSwiftCode() != null) {
-            branch.setSwiftCode(branchDto.getSwiftCode());
         }
         if (branchDto.getTelephoneNumber() != null) {
             branch.setTelephoneNumber(branchDto.getTelephoneNumber());

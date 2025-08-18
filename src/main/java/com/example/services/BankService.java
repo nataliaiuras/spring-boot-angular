@@ -1,18 +1,22 @@
 package com.example.services;
 
 import com.example.dtos.BankDto;
+import com.example.dtos.overview.BankOverviewDto;
 import com.example.exceptions.AppException;
 import com.example.mapers.BankMapper;
 import com.example.models.Bank;
 import com.example.repository.BankRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
 public class BankService {
+
     private final BankRepository bankRepository;
     private final BankMapper bankMapper;
 
@@ -21,38 +25,45 @@ public class BankService {
         this.bankMapper = bankMapper;
     }
 
-    public List<BankDto> allBank() {
-        return bankMapper.toBankDtos(bankRepository.findAll());
+    public List<BankOverviewDto> allBank() {
+        return bankMapper.toBankOverviewDtos(bankRepository.findAll());
     }
 
+    @Transactional
     public BankDto createBank(@Valid BankDto bankDto) {
-        return bankMapper.toBankDto(bankRepository.save(bankMapper.toBank(bankDto)));
-    }
 
-    public BankDto getBank(Long id) {
-        return bankMapper.toBankDto(bankRepository.findById(id).orElseThrow(() -> new AppException("Not found", HttpStatus.NOT_FOUND)));
-    }
+        if (bankRepository.findByName(bankDto.getName()).isPresent()
+                || bankRepository.findByWebsite(bankDto.getWebsite()).isPresent()) {
+            throw new AppException("Bank already exists", HttpStatus.CONFLICT);
+        }
 
-    public BankDto updateBank(Long id, @Valid BankDto bankDto) {
-        Bank bank = bankRepository.findById(id)
-                .orElseThrow(() -> new AppException("Not found", HttpStatus.NOT_FOUND));
-        bankMapper.updateBank(bank, bankMapper.toBank(bankDto));
+        Bank bank = bankMapper.toBank(bankDto);
+        bank.setId(null);
+        bank.setBranches(new HashSet<>());
+
         Bank savedBank = bankRepository.save(bank);
         return bankMapper.toBankDto(savedBank);
     }
 
+    public BankDto getBank(Long id) {
+        return bankMapper.toBankDto(bankRepository.findById(id).orElseThrow(() -> new AppException("Bank not found", HttpStatus.NOT_FOUND)));
+    }
+
+    @Transactional
+    public BankDto updateBank(Long id, @Valid BankDto bankDto) {
+        Bank existingBank = bankRepository.findById(id)
+                .orElseThrow(() -> new AppException("Bank not found", HttpStatus.NOT_FOUND));
+
+        bankMapper.updateBank(existingBank, bankMapper.toBank(bankDto));
+        return bankMapper.toBankDto(bankRepository.save(existingBank));
+    }
+
     public BankDto patchBank(Long id, BankDto bankDto) {
         Bank bank = bankRepository.findById(id)
-                .orElseThrow(() -> new AppException("Not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Bank not found", HttpStatus.NOT_FOUND));
 
         if (bankDto.getName() != null) {
             bank.setName(bankDto.getName());
-        }
-        if (bankDto.getTelephoneNumber() != null) {
-            bank.setTelephoneNumber(bankDto.getTelephoneNumber());
-        }
-        if (bankDto.getEmail() != null) {
-            bank.setEmail(bankDto.getEmail());
         }
         if (bankDto.getWebsite() != null) {
             bank.setWebsite(bankDto.getWebsite());
@@ -66,4 +77,14 @@ public class BankService {
         bankRepository.deleteById(id);
         return bankDto;
     }
+
+    public List<BankOverviewDto> getAllBanksOverview() {
+        return bankMapper.toBankOverviewDtos(bankRepository.findAll());
+    }
+
+    public BankDto getBankDetail(Long id) {
+        return bankMapper.toBankDto(bankRepository.findById(id).orElseThrow(() -> new AppException("Bank not found", HttpStatus.NOT_FOUND)));
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.mapers;
 
 import com.example.dtos.AccountDto;
+import com.example.dtos.overview.AccountOverviewDto;
 import com.example.models.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -17,4 +18,9 @@ public interface AccountMapper {
     List<AccountDto> toAccountDtos(List<Account> accounts);
 
     void updateAccount(@MappingTarget Account target, Account source);
+
+    AccountOverviewDto toAccountOverviewDto(Account account);
+
+    List<AccountOverviewDto> toAccountOverviewDtos(List<Account> accounts);
+
 }

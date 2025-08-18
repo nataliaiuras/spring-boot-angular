@@ -57,7 +57,7 @@ public class AddressService {
         if (addressDto.getCounty() != null) {
             address.setCounty(addressDto.getCounty());
         }
-        if (addressDto.getPostalCode() != 0) {
+        if (addressDto.getPostalCode() != null) {
             address.setPostalCode(addressDto.getPostalCode());
         }
         if (addressDto.getCountry() != null) {

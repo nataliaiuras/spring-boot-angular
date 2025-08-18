@@ -1,5 +1,3 @@
-import {Branch} from './branch';
-
 export interface Bank {
   id: number;
   name: string;

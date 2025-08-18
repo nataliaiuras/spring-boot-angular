@@ -11,7 +11,6 @@ import lombok.Setter;
 public class UserProfileDto {
 
     private String username;
-    private String email;
     private Role role;
 
 }

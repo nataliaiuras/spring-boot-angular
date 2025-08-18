@@ -1,10 +1,10 @@
 package com.example.controllers;
 
 import com.example.dtos.CardDto;
+import com.example.dtos.overview.CardOverviewDto;
 import com.example.services.CardService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -21,38 +21,38 @@ public class CardController {
     }
 
     @GetMapping(value = {"/", ""})
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<List<CardDto>> getAllCards() {
+ //   @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<List<CardOverviewDto>> getAllCards() {
         return ResponseEntity.ok(cardService.allCard());
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
+ //   @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CardDto> createCard(@Valid @RequestBody CardDto cardDto) {
         CardDto createdCard = cardService.createCard(cardDto);
         return ResponseEntity.created(URI.create("/" + cardDto.getId())).body(createdCard);
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+ //   @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CardDto> getCard(@PathVariable Long id) {
         return ResponseEntity.ok(cardService.getCard(id));
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+ //   @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CardDto> updateCard(@PathVariable Long id, @Valid @RequestBody CardDto cardDto) {
         return ResponseEntity.ok(cardService.updateCard(id, cardDto));
     }
 
     @PatchMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CardDto> patchCard(@PathVariable Long id, @RequestBody CardDto cardDto) {
         return ResponseEntity.ok(cardService.patchCard(id, cardDto));
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('USER')")
+  //  @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CardDto> deleteCard(@PathVariable Long id) {
         return ResponseEntity.ok(cardService.deleteCard(id));
     }

@@ -5,12 +5,15 @@ import com.example.dtos.UserProfileDto;
 import com.example.dtos.request.RegisterRequestDto;
 import com.example.models.User;
 import com.example.repository.UserRepository;
+import com.example.utils.Role;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -39,10 +42,15 @@ public class UserService {
         }
 
         User user = new User();
+
         user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
         user.setPassword(encoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
+
+        user.setRole(Role.GUEST);
+
+       /* user.setVersion(0L);
+        user.setCreatedDate(Instant.now());
+        user.setLastModifiedDate(Instant.now());*/
 
         userRepository.save(user);
         return "User registered successfully";
@@ -59,7 +67,9 @@ public class UserService {
 
     public UserProfileDto profile(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        return user.map(value -> new UserProfileDto(value.getEmail(), value.getUsername(), value.getRole())).orElseThrow();
+        return user.map(value -> new UserProfileDto(value.getUsername(),
+               // value.getEmail(),
+                value.getRole())).orElseThrow();
     }
 
 }

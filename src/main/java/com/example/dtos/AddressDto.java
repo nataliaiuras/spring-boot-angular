@@ -2,6 +2,8 @@ package com.example.dtos;
 
 import lombok.*;
 
+import java.time.Instant;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -11,16 +13,13 @@ import lombok.*;
 public class AddressDto {
 
     private Long id;
-
     private int number;
-
     private String street;
-
     private String city;
-
     private String county;
-
     private String country;
-
-    private int postalCode;
+    private String postalCode;
+    private Instant createdDate;
+    private Instant lastModifiedDate;
+    private Long version;
 }

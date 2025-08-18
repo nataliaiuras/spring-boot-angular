@@ -1,5 +1,8 @@
 package com.example.utils;
 
 public enum Role {
-    USER, ADMIN
+    ADMIN,
+    MANAGER,
+    USER,
+    GUEST
 }
