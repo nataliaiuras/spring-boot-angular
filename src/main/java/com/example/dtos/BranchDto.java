@@ -1,11 +1,10 @@
 package com.example.dtos;
 
-import com.example.models.Address;
-import com.example.models.Bank;
-import com.example.models.Customer;
+import com.example.dtos.overview.AddressOverviewDto;
+import com.example.dtos.overview.BankOverviewDto;
+import com.example.dtos.overview.CustomerOverviewDto;
 import lombok.*;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,12 +19,10 @@ public class BranchDto {
     private Long id;
     private String name;
     private String email;
-    private Address address;
+    private AddressOverviewDto address;
     private String telephoneNumber;
     private String bicCode;
-    private Bank bank;
-    private Set<Customer> customers = new HashSet<>();
-    private Instant createdDate;
-    private Instant lastModifiedDate;
-    private Long version;
+    private BankOverviewDto bank;
+    private Set<CustomerOverviewDto> customers = new HashSet<>();
+
 }

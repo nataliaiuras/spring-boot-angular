@@ -27,10 +27,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ACCOUNTS", indexes = {
-        @Index(name = "idx_account_number", columnList = "account_number", unique = true),
-        @Index(name = "idx_account_iban", columnList = "iban_code", unique = true)
-})
+@Table(name = "ACCOUNTS", indexes = {@Index(name = "idx_account_number", columnList = "account_number", unique = true), @Index(name = "idx_account_iban", columnList = "iban_code", unique = true)})
 @EntityListeners(AuditingEntityListener.class)
 public class Account implements Serializable {
 
@@ -63,9 +60,8 @@ public class Account implements Serializable {
     @PositiveOrZero
     private BigDecimal balance;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "customer_id", nullable = false)
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     @JsonBackReference
     private Customer customer;
 
@@ -75,7 +71,7 @@ public class Account implements Serializable {
     private Card card;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate

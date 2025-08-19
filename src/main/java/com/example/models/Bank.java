@@ -26,9 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "BANKS", indexes = {
-        @Index(name = "idx_bank_name", columnList = "name")
-})
+@Table(name = "BANKS", indexes = {@Index(name = "idx_bank_name", columnList = "name")})
 public class Bank implements Serializable {
 
     @Serial
@@ -53,6 +51,7 @@ public class Bank implements Serializable {
     private Set<Branch> branches = new HashSet<>();
 
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate

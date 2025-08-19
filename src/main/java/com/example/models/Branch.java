@@ -28,10 +28,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "BRANCHES", indexes = {
-        @Index(name = "idx_branch_bic", columnList = "bic_code"),
-        @Index(name = "idx_branch_bank", columnList = "bank_id")
-})
+@Table(name = "BRANCHES", indexes = {@Index(name = "idx_branch_bic", columnList = "bic_code"), @Index(name = "idx_branch_bank", columnList = "bank_id")})
 public class Branch implements Serializable {
 
     @Serial
@@ -50,11 +47,6 @@ public class Branch implements Serializable {
     @Email
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "address_id", nullable = false)
-    @JsonManagedReference
-    private Address address;
-
     @Column(name = "telephone_number", length = 20)
     @Pattern(regexp = "^\\+?[1-9][0-9]{7,14}$")
     private String telephoneNumber;
@@ -64,9 +56,13 @@ public class Branch implements Serializable {
     @Pattern(regexp = "^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$")
     private String bicCode;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "bank_id", nullable = false)
-    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    @JsonManagedReference
+    private Address address;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_id")
     @JsonBackReference
     private Bank bank;
 
@@ -77,11 +73,10 @@ public class Branch implements Serializable {
     private Set<Customer> customers = new HashSet<>();
 
     @CreatedDate
-    @Column(name = "created_date", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate
-    @Column(name = "last_modified_date")
     private Instant lastModifiedDate;
 
     @Version
@@ -95,20 +90,6 @@ public class Branch implements Serializable {
     public void removeCustomer(Customer customer) {
         customers.remove(customer);
         customer.setBranch(null);
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-        if (address != null) {
-            address.setBranch(this);
-        }
-    }
-
-    public void removeAddress() {
-        if (address != null) {
-            address.setBranch(null);
-            address = null;
-        }
     }
 
     @Override

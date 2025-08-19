@@ -5,11 +5,10 @@ import com.example.dtos.overview.BranchOverviewDto;
 import com.example.services.BranchService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -22,7 +21,7 @@ public class BranchController {
     }
 
     @GetMapping(value = {"/", ""})
-    public ResponseEntity<List<BranchOverviewDto>> getAllBranches() {
+    public ResponseEntity<Set<BranchOverviewDto>> getAllBranches() {
         return ResponseEntity.ok(branchService.allBranches());
     }
 
@@ -48,7 +47,34 @@ public class BranchController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<BranchDto> deleteBranch(@PathVariable Long id) {
-        return ResponseEntity.ok(branchService.deleteBranch(id));
+    public ResponseEntity<Void> deleteBranch(@PathVariable Long id) {
+        branchService.deleteBranch(id);
+        return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{branchId}/customer/{customerId}")
+    public ResponseEntity<BranchDto> addCustomerToBranch(@PathVariable Long branchId, @PathVariable Long customerId) {
+        BranchDto updatedBranch = branchService.addCustomerToBranch(branchId, customerId);
+        return ResponseEntity.ok(updatedBranch);
+    }
+
+    @DeleteMapping("/{branchId}/customer/{customerId}")
+    public ResponseEntity<BranchDto> removeCustomerFromBranch(@PathVariable Long branchId, @PathVariable Long customerId) {
+        BranchDto updatedBranch = branchService.removeCustomerFromBranch(branchId, customerId);
+        return ResponseEntity.ok(updatedBranch);
+    }
+
+    @PostMapping("/{branchId}/address/{addressId}")
+    public ResponseEntity<BranchDto> setAddressToBranch(@PathVariable Long branchId, @PathVariable Long addressId) {
+        BranchDto updatedBranch = branchService.setAddressToBranch(branchId, addressId);
+        return ResponseEntity.ok(updatedBranch);
+    }
+
+    @DeleteMapping("/{branchId}/address/{addressId}")
+    public ResponseEntity<BranchDto> removeAddressFromBranch(@PathVariable Long branchId, @PathVariable Long addressId) {
+        BranchDto updatedBranch = branchService.removeAddressFromBranch(branchId, addressId);
+        return ResponseEntity.ok(updatedBranch);
+    }
+
+
 }

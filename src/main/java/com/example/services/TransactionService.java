@@ -8,15 +8,18 @@ import com.example.mapers.AccountMapper;
 import com.example.mapers.TransactionMapper;
 import com.example.repository.TransactionRepository;
 import com.example.utils.Status;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
+@Transactional
 public class TransactionService {
 
     private final AccountService accountService;
@@ -33,8 +36,8 @@ public class TransactionService {
         this.accountMapper = accountMapper;
     }
 
-    public List<TransactionDto> allTransactions() {
-        return transactionMapper.toTransactionDtos(transactionRepository.findAll());
+    public Set<TransactionDto> allTransactions() {
+        return transactionMapper.toTransactionDtos(new HashSet<>(transactionRepository.findAll()));
     }
 
     public TransactionDto getTransactionById(Long id) {
@@ -58,7 +61,7 @@ public class TransactionService {
         fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
         accountService.patchAccount(fromAccount.getId(), fromAccount);
 
-       // toAccount.setBalance(toAccount.getBalance(). amount);
+        // toAccount.setBalance(toAccount.getBalance(). amount);
         accountService.patchAccount(toAccount.getId(), toAccount);
 
         TransactionDto current = new TransactionDto();
@@ -78,14 +81,13 @@ public class TransactionService {
 
     }
 
-    public List<TransactionDto> getAllTransactionsByAccountId(Long accountId) {
-        return allTransactions().stream()
-                .filter(current -> current.getFromAccount().getId()
-                        .equals(accountId)).toList();
+    public Set<TransactionDto> getAllTransactionsByAccountId(Long accountId) {
+       /* return allTransactions().stream()
+                .filter(current -> current.getFromAccount().id()).collect(Collectors.toSet());*/
+        return null;
     }
 
     public TransactionDto transfer(Long accountId, @Valid TransactionRequestDto transactionRequestDto) {
-
 
 
         AccountDto fromAccount = accountService.getAccount(accountId);

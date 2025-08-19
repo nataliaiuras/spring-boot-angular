@@ -1,8 +1,7 @@
 package com.example.dtos;
 
+import com.example.dtos.overview.BranchOverviewDto;
 import lombok.*;
-
-import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +18,6 @@ public class AddressDto {
     private String county;
     private String country;
     private String postalCode;
-    private Instant createdDate;
-    private Instant lastModifiedDate;
-    private Long version;
+    private BranchOverviewDto branch;
+
 }

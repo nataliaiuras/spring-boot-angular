@@ -1,13 +1,12 @@
 package com.example.dtos;
 
-import com.example.models.Card;
-import com.example.models.Customer;
+import com.example.dtos.overview.CardOverviewDto;
+import com.example.dtos.overview.CustomerOverviewDto;
 import com.example.utils.AccountType;
 import com.example.utils.Currency;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,10 +22,7 @@ public class AccountDto {
     private Currency currency;
     private String ibanCode;
     private BigDecimal balance;
-    private Customer customer;
-    private Card card;
-    private Instant createdDate;
-    private Instant lastModifiedDate;
-    private Long version;
+    private CustomerOverviewDto customer;
+    private CardOverviewDto card;
 
 }

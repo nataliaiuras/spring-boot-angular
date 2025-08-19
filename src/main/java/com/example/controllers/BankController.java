@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -22,8 +22,8 @@ public class BankController {
     }
 
     @GetMapping(value = {"/", ""})
-    public ResponseEntity<List<BankOverviewDto>> getAllBanks() {
-        return ResponseEntity.ok(bankService.getAllBanksOverview());
+    public ResponseEntity<Set<BankOverviewDto>> getAllBanks() {
+        return ResponseEntity.ok(bankService.allBanks());
     }
 
     @PostMapping
@@ -48,7 +48,22 @@ public class BankController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<BankDto> deleteBank(@PathVariable Long id) {
-        return ResponseEntity.ok(bankService.deleteBank(id));
+    public ResponseEntity<Void> deleteBank(@PathVariable Long id) {
+        bankService.deleteBank(id);
+        return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{bankId}/branch/{branchId}")
+    public ResponseEntity<BankDto> addBranchToBank(@PathVariable Long bankId, @PathVariable Long branchId) {
+        BankDto updatedBank = bankService.addBranchToBank(bankId, branchId);
+        return ResponseEntity.ok(updatedBank);
+    }
+
+    @DeleteMapping("/{bankId}/branch/{branchId}")
+    public ResponseEntity<BankDto> removeBranchFromBank(@PathVariable Long bankId, @PathVariable Long branchId) {
+        BankDto updatedBank = bankService.removeBranchFromBank(bankId, branchId);
+        return ResponseEntity.ok(updatedBank);
+    }
+
+
 }

@@ -2,12 +2,14 @@ package com.example.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,9 +23,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ADDRESSES", indexes = {
-        @Index(name = "idx_address_postal", columnList = "postal_code,country")
-})
+@Table(name = "ADDRESSES", indexes = {@Index(name = "idx_address_postal", columnList = "postal_code,country")})
 @EntityListeners(AuditingEntityListener.class)
 public class Address implements Serializable {
 
@@ -52,21 +52,21 @@ public class Address implements Serializable {
     @Size(max = 100)
     private String county;
 
-    @Column(name = "postal_code", nullable = false)
-    @Pattern(regexp = "^[0-9]{4,10}$")
-    private String postalCode;
-
     @Column(nullable = false, length = 2)
     @NotNull
     @Pattern(regexp = "^[A-Z]{2}$")
     private String country;
+
+    @Column(name = "postal_code", nullable = false)
+    @Pattern(regexp = "^[0-9]{4,10}$")
+    private String postalCode;
 
     @OneToOne(mappedBy = "address")
     @JsonBackReference
     private Branch branch;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate

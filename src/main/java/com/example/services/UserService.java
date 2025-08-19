@@ -6,17 +6,17 @@ import com.example.dtos.request.RegisterRequestDto;
 import com.example.models.User;
 import com.example.repository.UserRepository;
 import com.example.utils.Role;
+import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService {
 
     private final JWTService jwtService;
@@ -68,7 +68,7 @@ public class UserService {
     public UserProfileDto profile(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         return user.map(value -> new UserProfileDto(value.getUsername(),
-               // value.getEmail(),
+                // value.getEmail(),
                 value.getRole())).orElseThrow();
     }
 

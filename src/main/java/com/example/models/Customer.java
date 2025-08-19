@@ -25,10 +25,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CUSTOMERS", indexes = {
-        @Index(name = "idx_customer_cnp", columnList = "cnp", unique = true),
-        @Index(name = "idx_customer_email", columnList = "email", unique = true)
-})
+@Table(name = "CUSTOMERS", indexes = {@Index(name = "idx_customer_cnp", columnList = "cnp", unique = true), @Index(name = "idx_customer_email", columnList = "email", unique = true)})
 @EntityListeners(AuditingEntityListener.class)
 public class Customer implements Serializable {
 
@@ -66,15 +63,13 @@ public class Customer implements Serializable {
     @Email
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    @NotNull
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     @JsonManagedReference
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "branch_id", nullable = false)
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
     @JsonBackReference
     private Branch branch;
 
@@ -84,7 +79,7 @@ public class Customer implements Serializable {
     private Set<Account> accounts = new HashSet<>();
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate

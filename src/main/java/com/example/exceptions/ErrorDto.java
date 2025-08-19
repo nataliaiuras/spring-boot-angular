@@ -1,3 +1,4 @@
 package com.example.exceptions;
 
-public record ErrorDto (String message) { }
+public record ErrorDto(String message) {
+}
