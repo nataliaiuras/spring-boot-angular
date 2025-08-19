@@ -1,7 +1,5 @@
 package com.example.dtos.request;
 
-
-import com.example.utils.Role;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

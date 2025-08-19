@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -22,12 +23,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 @Entity
-@Table(name = "TRANSACTIONS", indexes = {
-        @Index(name = "idx_transaction_date", columnList = "transaction_date"),
-        @Index(name = "idx_transaction_status", columnList = "status"),
-        @Index(name = "idx_transaction_from_account", columnList = "from_account_id"),
-        @Index(name = "idx_transaction_to_account", columnList = "to_account_id")
-})
+@Table(name = "TRANSACTIONS", indexes = {@Index(name = "idx_transaction_date", columnList = "transaction_date"), @Index(name = "idx_transaction_status", columnList = "status"), @Index(name = "idx_transaction_from_account", columnList = "from_account_id"), @Index(name = "idx_transaction_to_account", columnList = "to_account_id")})
 @Getter
 @Builder
 @NoArgsConstructor
@@ -86,13 +82,15 @@ public class Transaction implements Serializable {
     @Column(name = "description", length = 255)
     @Size(max = 255)
     private String description;
-
-    @LastModifiedDate
-    @Column(name = "last_modified_date")
-    private Instant lastModifiedDate;
-
     @Column(name = "completed_date")
     private Instant completedDate;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private Instant createdDate;
+
+    @LastModifiedDate
+    private Instant lastModifiedDate;
 
     @Version
     private Long version;
@@ -117,9 +115,7 @@ public class Transaction implements Serializable {
 
     private void generateReferenceNumber() {
         if (referenceNumber == null) {
-            referenceNumber = String.format("TXN%s%d",
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")),
-                    ThreadLocalRandom.current().nextInt(1000, 9999));
+            referenceNumber = String.format("TXN%s%d", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")), ThreadLocalRandom.current().nextInt(1000, 9999));
         }
     }
 

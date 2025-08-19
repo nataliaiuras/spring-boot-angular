@@ -1,16 +1,14 @@
 package com.example.controllers;
 
 import com.example.dtos.AccountDto;
-import com.example.dtos.TransactionDto;
 import com.example.dtos.overview.AccountOverviewDto;
 import com.example.services.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -23,39 +21,48 @@ public class AccountController {
     }
 
     @GetMapping(value = {"/", ""})
-   // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<List<AccountOverviewDto>> getAllAccounts() {
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Set<AccountOverviewDto>> getAllAccounts() {
         return ResponseEntity.ok(accountService.allAccount());
     }
 
     @PostMapping
-   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> createAccount(@Valid @RequestBody AccountDto accountDto) {
         AccountDto createdAccount = accountService.createAccount(accountDto);
         return ResponseEntity.created(URI.create("/" + accountDto.getId())).body(createdAccount);
     }
 
     @GetMapping("{id}")
-   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> getAccount(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.getAccount(id));
     }
 
     @PutMapping("{id}")
-  //  @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> updateAccount(@PathVariable Long id, @Valid @RequestBody AccountDto accountDto) {
         return ResponseEntity.ok(accountService.updateAccount(id, accountDto));
     }
 
     @PatchMapping("{id}")
-  //  @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> patchAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
         return ResponseEntity.ok(accountService.patchAccount(id, accountDto));
     }
 
     @DeleteMapping("{id}")
-   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AccountDto> deleteAccount(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.deleteAccount(id));
     }
+
+    @PostMapping("/{accountId}/card{cardId}")
+    public ResponseEntity<AccountDto> setCardToAccount(@PathVariable Long accountId, @PathVariable Long cardId) {
+        AccountDto updatedAccount = accountService.setCardToAccount(accountId, cardId);
+        return ResponseEntity.ok(updatedAccount);
+    }
+
+    @DeleteMapping("/{accountId}/card{cardId}")
+    public ResponseEntity<AccountDto> removeCardFromAccount(@PathVariable Long accountId, @PathVariable Long cardId) {
+        AccountDto updatedAccount = accountService.removeCardFromAccount(accountId, cardId);
+        return ResponseEntity.ok(updatedAccount);
+    }
+
+
 }

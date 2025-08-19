@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -22,7 +22,7 @@ public class CustomerController {
     }
 
     @GetMapping(value = {"/", ""})
-    public ResponseEntity<List<CustomerOverviewDto>> getAllCustomers() {
+    public ResponseEntity<Set<CustomerOverviewDto>> getAllCustomers() {
         return ResponseEntity.ok(customerService.allCustomers());
     }
 
@@ -51,4 +51,30 @@ public class CustomerController {
     public ResponseEntity<CustomerDto> deleteCustomer(@PathVariable Long id) {
         return ResponseEntity.ok(customerService.deleteCustomer(id));
     }
+
+    @PostMapping("/{customerId}/account{accountId}")
+    public ResponseEntity<CustomerDto> addAccountToCustomer(@PathVariable Long customerId, @PathVariable Long accountId) {
+        CustomerDto updatedCustomer = customerService.addAccountToCustomer(customerId, accountId);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+    @DeleteMapping("/{customerId}/account{accountId}")
+    public ResponseEntity<CustomerDto> removeAccountFromCustomer(@PathVariable Long customerId, @PathVariable Long accountId) {
+        CustomerDto updatedCustomer = customerService.removeAccountFromCustomer(customerId, accountId);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+    @PostMapping("/{customerId}/user{userId}")
+    public ResponseEntity<CustomerDto> setUserToCustomer(@PathVariable Long customerId, @PathVariable Long userId) {
+        CustomerDto updatedCustomer = customerService.setUserToCustomer(customerId, userId);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+    @DeleteMapping("/{customerId}/user{userId}")
+    public ResponseEntity<CustomerDto> removeUserFromCustomer(@PathVariable Long customerId, @PathVariable Long userId) {
+        CustomerDto updatedCustomer = customerService.removeUserFromCustomer(customerId, userId);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+
 }

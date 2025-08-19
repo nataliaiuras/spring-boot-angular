@@ -19,9 +19,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
-@Table(name = "USERS", indexes = {
-        @Index(name = "idx_user_username", columnList = "username", unique = true)
-})
+@Table(name = "USERS", indexes = {@Index(name = "idx_user_username", columnList = "username", unique = true)})
 @Getter
 @Setter
 @Builder
@@ -56,7 +54,7 @@ public class User implements Serializable {
     private Customer customer;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate

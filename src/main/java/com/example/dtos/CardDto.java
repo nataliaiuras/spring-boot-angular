@@ -1,11 +1,11 @@
 package com.example.dtos;
 
 
-import com.example.models.Account;
+import com.example.dtos.overview.AccountOverviewDto;
+import com.example.utils.MaskSensitive;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -21,12 +21,11 @@ public class CardDto {
     private String cardHolder;
     private LocalDate validThru;
     @JsonSerialize(as = Integer.class)
+    @MaskSensitive(maskWith = "***")
     private int cvvCode;
     @JsonSerialize(as = Integer.class)
+    @MaskSensitive(maskWith = "****")
     private int pin;
-    private Account account;
-    private Instant createdDate;
-    private Instant lastModifiedDate;
-    private Long version;
+    private AccountOverviewDto account;
 
 }

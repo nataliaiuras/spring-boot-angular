@@ -1,17 +1,21 @@
 package com.example.services;
 
 import com.example.dtos.AddressDto;
+import com.example.dtos.overview.AddressOverviewDto;
 import com.example.exceptions.AppException;
 import com.example.mapers.AddressMapper;
 import com.example.models.Address;
 import com.example.repository.AddressRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
+@Transactional
 public class AddressService {
 
     private final AddressRepository addressRepository;
@@ -22,8 +26,8 @@ public class AddressService {
         this.addressMapper = addressMapper;
     }
 
-    public List<AddressDto> allAddress() {
-        return addressMapper.toAddressDtos(addressRepository.findAll());
+    public Set<AddressOverviewDto> allAddress() {
+        return addressMapper.toAddressOverviewDtos(new HashSet<>(addressRepository.findAll()));
     }
 
     public AddressDto createAddress(@Valid AddressDto addressDto) {
@@ -35,16 +39,14 @@ public class AddressService {
     }
 
     public AddressDto updateAddress(Long id, @Valid AddressDto addressDto) {
-        Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new AppException("Not found", HttpStatus.NOT_FOUND));
+        Address address = addressRepository.findById(id).orElseThrow(() -> new AppException("Not found", HttpStatus.NOT_FOUND));
         addressMapper.updateAddress(address, addressMapper.toAddress(addressDto));
         Address savedAddress = addressRepository.save(address);
         return addressMapper.toAddressDto(savedAddress);
     }
 
     public AddressDto patchAddress(Long id, AddressDto addressDto) {
-        Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new AppException("Not found", HttpStatus.NOT_FOUND));
+        Address address = addressRepository.findById(id).orElseThrow(() -> new AppException("Not found", HttpStatus.NOT_FOUND));
         if (addressDto.getStreet() != null) {
             address.setStreet(addressDto.getStreet());
         }

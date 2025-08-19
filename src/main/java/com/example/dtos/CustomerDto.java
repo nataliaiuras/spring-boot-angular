@@ -1,11 +1,9 @@
 package com.example.dtos;
 
-import com.example.models.Account;
-import com.example.models.Branch;
-import com.example.models.User;
+import com.example.dtos.overview.AccountOverviewDto;
+import com.example.dtos.overview.BranchOverviewDto;
 import lombok.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,10 +23,8 @@ public class CustomerDto {
     private String cnp;
     private String telephoneNumber;
     private String email;
-    private User user;
-    private Branch branch;
-    private Set<Account> accounts = new HashSet<>();
-    private Instant createdDate;
-    private Instant lastModifiedDate;
-    private Long version;
+    private UserProfileDto user;
+    private BranchOverviewDto branch;
+    private Set<AccountOverviewDto> accounts = new HashSet<>();
+
 }

@@ -1,6 +1,7 @@
 package com.example.models;
 
-import com.example.utils.*;
+import com.example.utils.MaskSensitive;
+import com.example.utils.SensitiveDataSerializer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
@@ -23,9 +24,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CARDS", indexes = {
-        @Index(name = "idx_card_number", columnList = "card_number", unique = true)
-})
+@Table(name = "CARDS", indexes = {@Index(name = "idx_card_number", columnList = "card_number", unique = true)})
 @EntityListeners(AuditingEntityListener.class)
 public class Card implements Serializable {
 
@@ -53,7 +52,6 @@ public class Card implements Serializable {
     @Column(name = "cvv_code", nullable = false)
     @MaskSensitive(maskWith = "***")
     @JsonSerialize(using = SensitiveDataSerializer.class)
-
     @Min(100)
     @Max(999)
     private int cvvCode;
@@ -70,7 +68,7 @@ public class Card implements Serializable {
     private Account account;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate

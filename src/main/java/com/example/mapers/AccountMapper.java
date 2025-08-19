@@ -4,23 +4,33 @@ import com.example.dtos.AccountDto;
 import com.example.dtos.overview.AccountOverviewDto;
 import com.example.models.Account;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
+import java.util.Set;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AccountMapper {
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "lastModifiedDate", ignore = true)
     Account toAccount(AccountDto accountDto);
 
     AccountDto toAccountDto(Account account);
 
-    List<AccountDto> toAccountDtos(List<Account> accounts);
+    Set<AccountDto> toAccountDtos(Set<Account> accounts);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "lastModifiedDate", ignore = true)
     void updateAccount(@MappingTarget Account target, Account source);
 
     AccountOverviewDto toAccountOverviewDto(Account account);
 
-    List<AccountOverviewDto> toAccountOverviewDtos(List<Account> accounts);
+    Set<AccountOverviewDto> toAccountOverviewDtos(Set<Account> accounts);
 
 }
