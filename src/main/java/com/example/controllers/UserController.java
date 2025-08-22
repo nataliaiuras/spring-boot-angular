@@ -1,18 +1,24 @@
 package com.example.controllers;
 
-import com.example.dtos.UserProfileDto;
-import com.example.dtos.request.RegisterRequestDto;
-import com.example.models.User;
+import com.example.dtos.UserDto;
+import com.example.dtos.request.PasswordUpdateDto;
+import com.example.dtos.request.RoleUpdateDto;
+import com.example.dtos.request.UserRequestDto;
+import com.example.dtos.response.ApiResponse;
+import com.example.services.AuthService;
 import com.example.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.HashMap;
+import java.net.URI;
+import java.nio.file.AccessDeniedException;
 import java.util.Map;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -20,36 +26,77 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @PostMapping("register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterRequestDto request) {
-        String result = userService.register(request);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<?> register(@RequestBody @Valid UserRequestDto request) {
+        Long userId = userService.register(request);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(userId)
+                .toUri();
+        return ResponseEntity.created(location).body(ApiResponse.success("User registered successfully"));
     }
 
     @PostMapping("login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
-        String jwtToken = userService.verify(user);
-        Map<String, String> response = new HashMap<>();
-        response.put("token", jwtToken);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ApiResponse<Map<String, String>>> login(@RequestBody @Valid UserRequestDto userRequestDto) {
+        String jwtToken = authService.authenticate(userRequestDto.getUsername(), userRequestDto.getPassword());
+        Map<String, String> tokenData = Map.of("token", jwtToken);
+        return ResponseEntity.ok(ApiResponse.success(tokenData, "Login successful"));
     }
 
     @PostMapping("logout")
-    public ResponseEntity<?> logoutUser() {
+    public ResponseEntity<ApiResponse<String>> logoutUser() {
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("User logged out successfully");
+        return ResponseEntity.ok(ApiResponse.success("User logged out successfully"));
     }
 
     @GetMapping("profile")
-    public ResponseEntity<UserProfileDto> profile(Authentication authentication) {
-        UserProfileDto userProfileDto = userService.profile(authentication.getName());
-        return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<UserDto>> profile(Authentication authentication) {
+        UserDto userDto = userService.profile(authentication.getName());
+        return ResponseEntity.ok(ApiResponse.success(userDto));
     }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    public ResponseEntity<ApiResponse<Set<UserDto>>> getAllUsers() throws AccessDeniedException {
+        return ResponseEntity.ok(ApiResponse.success(userService.getAllUsers()));
+    }
+
+    @GetMapping("{id}")
+    @PreAuthorize("@securityService.canViewUser(#id)")
+    public ResponseEntity<ApiResponse<UserDto>> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(userService.getUserById(id)));
+    }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("@securityService.canDeleteUser(#id)")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok(ApiResponse.success("User was removed successfully"));
+    }
+
+
+    @PatchMapping("{id}/updatePassword")
+    @PreAuthorize("@securityService.isCurrentUserOrAdmin(#id)")
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @Valid @RequestBody PasswordUpdateDto passwordDto) {
+        return userService.updatePassword(id, passwordDto);
+    }
+
+    @PatchMapping("{id}/updateRole")
+    @PreAuthorize("@securityService.canUpdateUserRole(#id, #roleUpdateDto.role)")
+    public ResponseEntity<ApiResponse<String>> updateRole(
+            @PathVariable Long id,
+            @Valid @RequestBody RoleUpdateDto roleUpdateDto) {
+        return userService.updateUserRole(id, roleUpdateDto);
+    }
+
 
 
 }

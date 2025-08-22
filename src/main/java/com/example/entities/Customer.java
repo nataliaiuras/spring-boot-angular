@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -87,18 +87,6 @@ public class Customer implements Serializable {
 
     @Version
     private Long version;
-
-    public void addAccount(Account account) {
-        if (account != null) {
-            accounts.add(account);
-            account.setCustomer(this);
-        }
-    }
-
-    public void removeAccount(Account account) {
-        accounts.remove(account);
-        account.setCustomer(null);
-    }
 
 
 }

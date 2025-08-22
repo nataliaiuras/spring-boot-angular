@@ -2,13 +2,11 @@ package com.example.mapers;
 
 import com.example.dtos.AccountDto;
 import com.example.dtos.overview.AccountOverviewDto;
-import com.example.models.Account;
+import com.example.entities.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
-
-import java.util.Set;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AccountMapper {
@@ -21,7 +19,7 @@ public interface AccountMapper {
 
     AccountDto toAccountDto(Account account);
 
-    Set<AccountDto> toAccountDtos(Set<Account> accounts);
+    AccountOverviewDto toAccountOverviewDto(Account account);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "version", ignore = true)
@@ -29,8 +27,5 @@ public interface AccountMapper {
     @Mapping(target = "lastModifiedDate", ignore = true)
     void updateAccount(@MappingTarget Account target, Account source);
 
-    AccountOverviewDto toAccountOverviewDto(Account account);
-
-    Set<AccountOverviewDto> toAccountOverviewDtos(Set<Account> accounts);
 
 }

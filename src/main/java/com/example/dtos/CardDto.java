@@ -24,7 +24,7 @@ public class CardDto {
     @MaskSensitive(maskWith = "***")
     private int cvvCode;
     @JsonSerialize(as = Integer.class)
-    @MaskSensitive(maskWith = "****")
+    @MaskSensitive(maskWith = "***")
     private int pin;
     private AccountOverviewDto account;
 

@@ -2,26 +2,21 @@ package com.example.mapers;
 
 import com.example.dtos.BankDto;
 import com.example.dtos.overview.BankOverviewDto;
-import com.example.models.Bank;
+import com.example.dtos.overview.BranchOverviewDto;
+import com.example.entities.Bank;
+import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.Set;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BankMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "version", ignore = true)
-    @Mapping(target = "createdDate", ignore = true)
-    @Mapping(target = "lastModifiedDate", ignore = true)
-    Bank toBank(BankDto bankDto);
-
     BankDto toBankDto(Bank bank);
 
-    Set<BankDto> toBankDtos(Set<Bank> banks);
+    Bank toBank(@Valid BankDto bankDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "version", ignore = true)
@@ -30,17 +25,4 @@ public interface BankMapper {
     void updateBank(@MappingTarget Bank target, Bank source);
 
     BankOverviewDto toBankOverviewDto(Bank bank);
-
-    Set<BankOverviewDto> toBankOverviewDtos(Set<Bank> banks);
-
-
-    /*    default Set<BranchOverviewDto> toBranchOverviewDtos(Set<Branch> branches) {
-        if (branches == null) {
-            return new HashSet<>();
-        }
-        return branches.stream()
-                .map(this::toBranchOverviewDto)
-                .collect(Collectors.toSet());
-    }*/
-
 }

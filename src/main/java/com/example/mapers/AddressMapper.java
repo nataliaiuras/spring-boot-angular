@@ -2,12 +2,10 @@ package com.example.mapers;
 
 import com.example.dtos.AddressDto;
 import com.example.dtos.overview.AddressOverviewDto;
-import com.example.models.Address;
+import com.example.entities.Address;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
@@ -20,7 +18,7 @@ public interface AddressMapper {
 
     AddressDto toAddressDto(Address address);
 
-    Set<AddressDto> toAddressDtos(Set<Address> addresses);
+    AddressOverviewDto toAddressOverviewDto(Address address);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "version", ignore = true)
@@ -28,7 +26,5 @@ public interface AddressMapper {
     @Mapping(target = "lastModifiedDate", ignore = true)
     void updateAddress(@MappingTarget Address target, Address source);
 
-    AddressOverviewDto toAddressOverviewDto(Address address);
 
-    Set<AddressOverviewDto> toAddressOverviewDtos(Set<Address> addresses);
 }

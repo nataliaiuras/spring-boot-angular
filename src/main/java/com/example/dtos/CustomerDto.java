@@ -23,7 +23,7 @@ public class CustomerDto {
     private String cnp;
     private String telephoneNumber;
     private String email;
-    private UserProfileDto user;
+    private UserDto user;
     private BranchOverviewDto branch;
     private Set<AccountOverviewDto> accounts = new HashSet<>();
 

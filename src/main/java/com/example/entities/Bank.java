@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -60,26 +60,5 @@ public class Bank implements Serializable {
     @Version
     private Long version;
 
-    public void addBranch(Branch branch) {
-        this.branches.add(branch);
-        branch.setBank(this);
-    }
-
-    public void removeBranch(Branch branch) {
-        this.branches.remove(branch);
-        branch.setBank(null);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Bank bank)) return false;
-        return id != null && id.equals(bank.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
 }

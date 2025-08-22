@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -70,7 +70,7 @@ public class Branch implements Serializable {
     @BatchSize(size = 20)
     @OrderBy("lastName ASC")
     @JsonManagedReference
-    private Set<Customer> customers = new HashSet<>();
+    private Set<Customer> customers;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -82,26 +82,5 @@ public class Branch implements Serializable {
     @Version
     private Long version;
 
-    public void addCustomer(Customer customer) {
-        customers.add(customer);
-        customer.setBranch(this);
-    }
-
-    public void removeCustomer(Customer customer) {
-        customers.remove(customer);
-        customer.setBranch(null);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Branch branch)) return false;
-        return id != null && id.equals(branch.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
 }
