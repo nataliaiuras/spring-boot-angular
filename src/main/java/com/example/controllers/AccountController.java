@@ -2,66 +2,63 @@ package com.example.controllers;
 
 import com.example.dtos.AccountDto;
 import com.example.dtos.overview.AccountOverviewDto;
+import com.example.dtos.response.ApiResponse;
 import com.example.services.AccountService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api/accounts")
+@AllArgsConstructor
 public class AccountController {
+
     private final AccountService accountService;
 
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
-    }
-
-    @GetMapping(value = {"/", ""})
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Set<AccountOverviewDto>> getAllAccounts() {
-        return ResponseEntity.ok(accountService.allAccount());
-    }
-
     @PostMapping
-    public ResponseEntity<AccountDto> createAccount(@Valid @RequestBody AccountDto accountDto) {
+    public ResponseEntity<ApiResponse<AccountDto>> createAccount(@Valid @RequestBody AccountDto accountDto) {
         AccountDto createdAccount = accountService.createAccount(accountDto);
-        return ResponseEntity.created(URI.create("/" + accountDto.getId())).body(createdAccount);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdAccount.getId()).toUri();
+        return ResponseEntity.created(location).body(ApiResponse.success(createdAccount, "Account created successfully"));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<AccountOverviewDto>>> getAllAccounts(@RequestParam(defaultValue = "0") @Min(0) int page,
+                                                                                @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+                                                                                @RequestParam(defaultValue = "id") String sortBy,
+                                                                                @RequestParam(defaultValue = "asc") String sortDir) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        Page<AccountOverviewDto> pagedAccounts = accountService.getAllAccounts(pageable);
+        return ResponseEntity.ok(ApiResponse.success(pagedAccounts));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<AccountDto> getAccount(@PathVariable Long id) {
-        return ResponseEntity.ok(accountService.getAccount(id));
+    public ResponseEntity<ApiResponse<AccountDto>> getAccount(@PathVariable Long id) {
+        AccountDto accountDto = accountService.getAccountById(id);
+        return ResponseEntity.ok(ApiResponse.success(accountDto));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<AccountDto> updateAccount(@PathVariable Long id, @Valid @RequestBody AccountDto accountDto) {
-        return ResponseEntity.ok(accountService.updateAccount(id, accountDto));
-    }
-
-    @PatchMapping("{id}")
-    public ResponseEntity<AccountDto> patchAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
-        return ResponseEntity.ok(accountService.patchAccount(id, accountDto));
+    public ResponseEntity<ApiResponse<AccountDto>> updateAccount(@PathVariable Long id, @Valid @RequestBody AccountDto accountDto) {
+        AccountDto updatedAccountDto = accountService.updateAccount(id, accountDto);
+        return ResponseEntity.ok(ApiResponse.success(updatedAccountDto, "Account updated successfully"));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<AccountDto> deleteAccount(@PathVariable Long id) {
-        return ResponseEntity.ok(accountService.deleteAccount(id));
-    }
-
-    @PostMapping("/{accountId}/card{cardId}")
-    public ResponseEntity<AccountDto> setCardToAccount(@PathVariable Long accountId, @PathVariable Long cardId) {
-        AccountDto updatedAccount = accountService.setCardToAccount(accountId, cardId);
-        return ResponseEntity.ok(updatedAccount);
-    }
-
-    @DeleteMapping("/{accountId}/card{cardId}")
-    public ResponseEntity<AccountDto> removeCardFromAccount(@PathVariable Long accountId, @PathVariable Long cardId) {
-        AccountDto updatedAccount = accountService.removeCardFromAccount(accountId, cardId);
-        return ResponseEntity.ok(updatedAccount);
+    public ResponseEntity<ApiResponse<String>> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.ok(ApiResponse.success("Account deleted successfully"));
     }
 
 

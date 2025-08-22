@@ -17,6 +17,7 @@ import java.util.Date;
 @Setter
 public class TransactionDto {
     private Long id;
+    private String referenceNumber;
     private BigDecimal amount;
     private TransactionType type;
     private Status status;
@@ -25,7 +26,6 @@ public class TransactionDto {
     private AccountOverviewDto fromAccount;
     private CustomerOverviewDto toCustomer;
     private AccountOverviewDto toAccount;
-    private String referenceNumber;
     private String description;
 
 }

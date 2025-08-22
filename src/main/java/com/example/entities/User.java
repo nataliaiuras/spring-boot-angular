@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.entities;
 
 import com.example.utils.MaskSensitive;
 import com.example.utils.Role;
@@ -8,11 +8,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,7 +24,6 @@ import java.time.Instant;
 @Table(name = "USERS", indexes = {@Index(name = "idx_user_username", columnList = "username", unique = true)})
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -47,7 +48,11 @@ public class User implements Serializable {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
+
+    @Column(nullable = false)
+    private boolean enabled = true;
 
     @OneToOne(mappedBy = "user")
     @JsonBackReference
@@ -63,13 +68,5 @@ public class User implements Serializable {
     @Version
     private Long version;
 
-    @PrePersist
-    @PreUpdate
-    private void encryptPassword() {
-        final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-        if (password != null && !password.startsWith("$2a$")) {
-            password = encoder.encode(password);
-        }
-    }
 
 }

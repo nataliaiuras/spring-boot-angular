@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequestDto {
+public class UserRequestDto {
 
     @NotNull
     @NotEmpty

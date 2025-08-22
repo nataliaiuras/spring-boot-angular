@@ -1,6 +1,6 @@
 package com.example.other;
 
-import com.example.models.User;
+import com.example.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.example.other;
 
 
-import com.example.models.User;
+import com.example.entities.User;
 import com.example.services.UserService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class PostService {
     }
 
     public PostDto create(PostRequestDto req, String username) {
-        User user = userService.getUser(username);
+        User user = userService.getUserByName(username);
         Post post = new Post();
         post.setTitle(req.getTitle());
         post.setContent(req.getContent());
@@ -46,7 +46,7 @@ public class PostService {
     }
 
     public List<PostDto> myPosts(String username) {
-        User user = userService.getUser(username);
+        User user = userService.getUserByName(username);
         return postRepository.findByUser(user).stream().map(this::toDto).toList();
     }
 

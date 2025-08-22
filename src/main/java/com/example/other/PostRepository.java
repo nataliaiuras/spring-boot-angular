@@ -1,7 +1,7 @@
 package com.example.other;
 
 
-import com.example.models.User;
+import com.example.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

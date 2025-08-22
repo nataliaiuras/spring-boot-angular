@@ -1,7 +1,7 @@
 package com.example.other;
 
-import com.example.exceptions.AppException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class VehicleService {
 
     public VehicleDto updateVehicle(Long id, VehicleDto vehicleDto) {
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new AppException(NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow();
         vehicleMapper.updateVehicle(vehicle, vehicleMapper.toVehicle(vehicleDto));
         Vehicle savedVehicle = vehicleRepository.save(vehicle);
         return vehicleMapper.toVehicleDto(savedVehicle);
@@ -38,7 +38,7 @@ public class VehicleService {
 
     public VehicleDto patchVehicle(Long id, VehicleDto vehicleDto) {
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new AppException(NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow();
 
         if (vehicleDto.getBrand() != null) {
             vehicle.setBrand(vehicleDto.getBrand());
@@ -60,7 +60,7 @@ public class VehicleService {
 
     public VehicleDto deleteVehicle(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new AppException(NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow();
         VehicleDto vehicleDto = vehicleMapper.toVehicleDto(vehicle);
 
         vehicleRepository.deleteById(id);
@@ -70,7 +70,7 @@ public class VehicleService {
 
     public VehicleDto getVehicle(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new AppException(NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow();
         return vehicleMapper.toVehicleDto(vehicle);
     }
 }

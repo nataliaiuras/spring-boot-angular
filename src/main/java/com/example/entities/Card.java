@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.entities;
 
 import com.example.utils.MaskSensitive;
 import com.example.utils.SensitiveDataSerializer;
@@ -57,7 +57,7 @@ public class Card implements Serializable {
     private int cvvCode;
 
     @Column(nullable = false)
-    @MaskSensitive(maskWith = "****")
+    @MaskSensitive(maskWith = "***")
     @JsonSerialize(using = SensitiveDataSerializer.class)
     @Min(1000)
     @Max(9999)
@@ -76,14 +76,6 @@ public class Card implements Serializable {
 
     @Version
     private Long version;
-
-    @PrePersist
-    @PreUpdate
-    private void validateCard() {
-        if (validThru != null && validThru.isBefore(LocalDate.now())) {
-            throw new IllegalStateException("Card expiration date must be in the future");
-        }
-    }
 
 
 }

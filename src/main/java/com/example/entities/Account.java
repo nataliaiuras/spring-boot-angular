@@ -1,6 +1,5 @@
-package com.example.models;
+package com.example.entities;
 
-import com.example.exceptions.InsufficientFundsException;
 import com.example.utils.AccountType;
 import com.example.utils.Currency;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -79,23 +78,6 @@ public class Account implements Serializable {
 
     @Version
     private Long version;
-
-    public void debit(BigDecimal amount) throws InsufficientFundsException {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Debit amount must be positive");
-        }
-        if (balance.compareTo(amount) < 0) {
-            throw new InsufficientFundsException("Insufficient funds");
-        }
-        this.balance = this.balance.subtract(amount);
-    }
-
-    public void credit(BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Credit amount must be positive");
-        }
-        this.balance = this.balance.add(amount);
-    }
 
 
 }
