@@ -2,7 +2,7 @@ package com.example.other;
 
 
 import com.example.entities.User;
-import com.example.services.UserService;
+import com.example.services.impl.UserService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 

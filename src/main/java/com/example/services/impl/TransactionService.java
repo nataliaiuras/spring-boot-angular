@@ -1,7 +1,6 @@
-package com.example.services;
+package com.example.services.impl;
 
 import com.example.dtos.TransactionDto;
-import com.example.dtos.overview.TransactionOverviewDto;
 import com.example.exceptions.domain.transaction.TransactionNotFound;
 import com.example.mapers.TransactionMapper;
 import com.example.repository.TransactionRepository;
@@ -9,7 +8,6 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Service

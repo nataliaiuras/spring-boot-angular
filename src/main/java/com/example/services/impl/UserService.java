@@ -1,12 +1,12 @@
-package com.example.services;
+package com.example.services.impl;
 
 import com.example.config.security.JWTService;
 import com.example.dtos.UserDto;
-import com.example.dtos.overview.UserOverviewDto;
 import com.example.dtos.request.PasswordUpdateDto;
 import com.example.dtos.request.RoleUpdateDto;
 import com.example.dtos.request.UserRequestDto;
 import com.example.dtos.response.ApiResponse;
+import com.example.exceptions.domain.user.InvalidCredentialsException;
 import com.example.exceptions.domain.user.UserAlreadyExistsException;
 import com.example.exceptions.domain.user.UserNotFoundException;
 import com.example.entities.User;
@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private final JWTService jwtService;
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
@@ -53,7 +56,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUserByName(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+        return userRepository.findByUsername(username);
     }
 
     public UserDto getUserById(Long id) {
@@ -74,7 +77,7 @@ public class UserService implements UserDetailsService {
 
 
     public Long register(UserRequestDto request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(request.getUsername()) != null) {
             throw new UserAlreadyExistsException(request.getUsername());
         }
         User user = createNewUser(request);
@@ -83,20 +86,21 @@ public class UserService implements UserDetailsService {
         return user.getId();
     }
 
-    /*public String authenticate(String username, String password) {
+    public String authenticate(String username, String password) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
+            User user = userRepository.findByUsername(username);
             if (authentication.isAuthenticated()) {
-                return jwtService.generateToken(username);
+                return jwtService.generateToken(username, user.getRole().name());
             }
             throw new InvalidCredentialsException();
         } catch (Exception e) {
             log.error("Authentication failed for user: {}", username, e);
             throw new InvalidCredentialsException();
         }
-    }*/
+    }
 
     public UserDto profile(String username) {
         User user = findUserByUsername(username);
@@ -154,8 +158,8 @@ public class UserService implements UserDetailsService {
     }
 
     private User findUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        return userRepository.findByUsername(username);
+               // .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
     private UserDto mapToUserDto(User user) {

@@ -5,8 +5,7 @@ import com.example.dtos.request.PasswordUpdateDto;
 import com.example.dtos.request.RoleUpdateDto;
 import com.example.dtos.request.UserRequestDto;
 import com.example.dtos.response.ApiResponse;
-import com.example.services.AuthService;
-import com.example.services.UserService;
+import com.example.services.impl.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,11 +25,10 @@ import java.util.Set;
 public class UserController {
 
     private final UserService userService;
-    private final AuthService authService;
+  //  private final AuthService authService;
 
-    public UserController(UserService userService, AuthService authService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.authService = authService;
     }
 
     @PostMapping("register")
@@ -46,7 +44,7 @@ public class UserController {
 
     @PostMapping("login")
     public ResponseEntity<ApiResponse<Map<String, String>>> login(@RequestBody @Valid UserRequestDto userRequestDto) {
-        String jwtToken = authService.authenticate(userRequestDto.getUsername(), userRequestDto.getPassword());
+        String jwtToken = userService.authenticate(userRequestDto.getUsername(), userRequestDto.getPassword());
         Map<String, String> tokenData = Map.of("token", jwtToken);
         return ResponseEntity.ok(ApiResponse.success(tokenData, "Login successful"));
     }

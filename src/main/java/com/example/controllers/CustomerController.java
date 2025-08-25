@@ -3,7 +3,7 @@ package com.example.controllers;
 import com.example.dtos.CustomerDto;
 import com.example.dtos.overview.CustomerOverviewDto;
 import com.example.dtos.response.ApiResponse;
-import com.example.services.CustomerService;
+import com.example.services.impl.CustomerService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
