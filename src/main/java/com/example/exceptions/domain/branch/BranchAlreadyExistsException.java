@@ -4,7 +4,7 @@ import com.example.exceptions.domain.DomainEntityException;
 import org.springframework.http.HttpStatus;
 
 public class BranchAlreadyExistsException extends DomainEntityException {
-    public BranchAlreadyExistsException(Long id) {
-        super("Branch with id ", id.toString(), " already exists", HttpStatus.CONFLICT);
+    public BranchAlreadyExistsException(String name) {
+        super("Branch with this name", name, "already exists", HttpStatus.CONFLICT);
     }
 }

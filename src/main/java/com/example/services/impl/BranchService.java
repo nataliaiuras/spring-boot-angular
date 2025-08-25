@@ -1,4 +1,4 @@
-package com.example.services;
+package com.example.services.impl;
 
 import com.example.dtos.BranchDto;
 import com.example.dtos.overview.BranchOverviewDto;
@@ -40,7 +40,7 @@ public class BranchService {
 
     public BranchDto createBranch(BranchDto branchDto) {
         if (branchRepository.findByName(branchDto.getName()).isPresent()) {
-            throw new BranchAlreadyExistsException(branchDto.getId());
+            throw new BranchAlreadyExistsException(branchDto.getName());
         }
         Branch branch = branchMapper.toBranch(branchDto);
         branch.setId(null);
