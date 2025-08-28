@@ -3,6 +3,9 @@ package com.example.utils;
 import com.fasterxml.jackson.databind.util.StdConverter;
 
 public class EncryptedIntegerJsonConverter  {
+
+    private EncryptedIntegerJsonConverter() {}
+
     public static class Serializer extends StdConverter<Integer, Integer> {
         @Override
         public Integer convert(Integer value) {

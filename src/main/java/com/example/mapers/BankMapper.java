@@ -2,7 +2,6 @@ package com.example.mapers;
 
 import com.example.dtos.BankDto;
 import com.example.dtos.overview.BankOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
 import com.example.entities.Bank;
 import jakarta.validation.Valid;
 import org.mapstruct.Mapper;

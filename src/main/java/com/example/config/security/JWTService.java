@@ -4,20 +4,19 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class JWTService {
 
     @Value("${security.jwt.secret-key}")
@@ -40,8 +39,8 @@ public class JWTService {
         }*/
     }
 
-    public String generateToken(String username, String role) {
-        System.out.println("Generating token for username: " + username);
+    public String generateToken(String username) {
+        log.info("Generating token for username: {}", username);
         Map<String, Object> claims = new HashMap<>();
 
         String token = Jwts
@@ -56,7 +55,7 @@ public class JWTService {
                 .signWith(getKey())
                 .compact();
 
-        System.out.println("Generated token: " + token);
+        log.info("Generated token: {}", token);
         return token;
 
     }
@@ -67,13 +66,12 @@ public class JWTService {
     }
 
     public String extractUserName(String token) {
-        //return extractClaim(token, Claims::getSubject);
         try {
             String username = extractClaim(token, Claims::getSubject);
-            System.out.println("Extracted username from token: " + username);
+            log.info("Extracted username from token: {}", username);
             return username;
         } catch (Exception e) {
-            System.out.println("Error extracting username from token: " + e.getMessage());
+            log.info("Error extracting username from token: {}", e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -90,21 +88,16 @@ public class JWTService {
     }
 
     private Claims extractAllClaims(String token) {
-        /*return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();*/
         try {
             Claims claims = Jwts.parser()
                     .verifyWith(getKey())
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-            System.out.println("Token claims: " + claims);
+            log.info("Token claims: {}", claims);
             return claims;
         } catch (Exception e) {
-            System.out.println("Error parsing token: " + e.getMessage());
+            log.info("Error parsing token: {}", e.getMessage());
             e.printStackTrace();
             throw e;
         }

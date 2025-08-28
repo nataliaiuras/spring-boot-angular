@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             );
             User user = userRepository.findByUsername(username);
             if (authentication.isAuthenticated()) {
-                return jwtService.generateToken(username, user.getRole().name());
+                return jwtService.generateToken(username);
             }
             throw new InvalidCredentialsException();
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         log.info("User deleted successfully with ID: {}", id);
     }
 
-    public ResponseEntity<?> updatePassword(Long userId, PasswordUpdateDto passwordDto) {
+    public ResponseEntity<ApiResponse<String>> updatePassword(Long userId, PasswordUpdateDto passwordDto) {
         try {
             validatePasswordUpdate(passwordDto);
             User user = userRepository.findById(userId)

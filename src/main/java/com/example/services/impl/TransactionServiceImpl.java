@@ -19,10 +19,6 @@ public class TransactionServiceImpl {
     private final TransactionRepository transactionRepository;
 
 
-/*    public Set<TransactionOverviewDto> getAllTransactions() {
-        return transactionMapper.toTransactionDtos(new HashSet<>(transactionRepository.findAll()));
-    }*/
-
     public TransactionDto getTransactionById(Long id) {
         return transactionMapper.toTransactionDto(transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFound(id)));
     }

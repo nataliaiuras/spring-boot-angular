@@ -9,7 +9,6 @@ import com.example.entities.Account;
 import com.example.entities.Branch;
 import com.example.entities.Customer;
 import com.example.entities.User;
-import com.example.exceptions.domain.branch.BranchNotFoundException;
 import com.example.exceptions.domain.customer.CustomerNotFoundException;
 import com.example.mapers.AccountMapper;
 import com.example.mapers.BranchMapper;

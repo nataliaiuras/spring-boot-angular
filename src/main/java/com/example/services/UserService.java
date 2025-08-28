@@ -26,7 +26,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    ResponseEntity<?> updatePassword(Long id, @Valid PasswordUpdateDto passwordDto);
+    ResponseEntity<ApiResponse<String>> updatePassword(Long id, @Valid PasswordUpdateDto passwordDto);
 
     ResponseEntity<ApiResponse<String>> updateUserRole(Long id, @Valid RoleUpdateDto roleUpdateDto);
 }

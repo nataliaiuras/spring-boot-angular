@@ -9,7 +9,6 @@ import com.example.entities.Bank;
 import com.example.entities.Branch;
 import com.example.entities.Customer;
 import com.example.exceptions.BusinessException;
-import com.example.exceptions.domain.address.AddressIsAlreadyAssignedException;
 import com.example.exceptions.domain.address.AddressNotFoundException;
 import com.example.exceptions.domain.bank.BankNotFoundException;
 import com.example.exceptions.domain.branch.BranchAlreadyExistsException;
@@ -48,7 +47,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     public BranchOverviewDto getBranchById(Long id) {
-        Branch branch= branchRepository.findById(id)
+        Branch branch = branchRepository.findById(id)
                 .orElseThrow(() -> new BranchNotFoundException(id));
         return branchMapper.toBranchOverviewDto(branch);
     }

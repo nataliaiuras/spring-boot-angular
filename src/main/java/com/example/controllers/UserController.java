@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody @Valid UserRequestDto request) {
+    public ResponseEntity<ApiResponse<String>> register(@RequestBody @Valid UserRequestDto request) {
         Long userId = userService.register(request);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -85,7 +85,7 @@ public class UserController {
 
     @PatchMapping("{id}/updatePassword")
     @PreAuthorize("@securityService.isCurrentUserOrAdmin(#id)")
-    public ResponseEntity<?> updatePassword(@PathVariable Long id, @Valid @RequestBody PasswordUpdateDto passwordDto) {
+    public ResponseEntity<ApiResponse<String>> updatePassword(@PathVariable Long id, @Valid @RequestBody PasswordUpdateDto passwordDto) {
         return userService.updatePassword(id, passwordDto);
     }
 
