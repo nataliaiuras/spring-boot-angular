@@ -6,11 +6,12 @@ import com.example.dtos.request.PasswordUpdateDto;
 import com.example.dtos.request.RoleUpdateDto;
 import com.example.dtos.request.UserRequestDto;
 import com.example.dtos.response.ApiResponse;
+import com.example.entities.User;
 import com.example.exceptions.domain.user.InvalidCredentialsException;
 import com.example.exceptions.domain.user.UserAlreadyExistsException;
 import com.example.exceptions.domain.user.UserNotFoundException;
-import com.example.entities.User;
 import com.example.repository.UserRepository;
+import com.example.services.UserService;
 import com.example.utils.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -159,7 +160,7 @@ public class UserService implements UserDetailsService {
 
     private User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
-               // .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        // .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
     private UserDto mapToUserDto(User user) {

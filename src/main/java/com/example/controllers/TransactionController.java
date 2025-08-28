@@ -1,7 +1,7 @@
 package com.example.controllers;
 
 
-import com.example.services.impl.TransactionService;
+import com.example.services.impl.TransactionServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class TransactionController {
 
-    private final TransactionService transactionService;
+    private final TransactionServiceImpl transactionService;
 
  /*   @GetMapping(value = {"/", ""})
     public ResponseEntity<Set<TransactionOverviewDto>> allTransactions() {

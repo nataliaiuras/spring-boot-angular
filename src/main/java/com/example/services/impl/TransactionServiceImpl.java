@@ -13,7 +13,7 @@ import java.util.Set;
 @Service
 @Transactional
 @AllArgsConstructor
-public class TransactionService {
+public class TransactionServiceImpl {
 
     private final TransactionMapper transactionMapper;
     private final TransactionRepository transactionRepository;

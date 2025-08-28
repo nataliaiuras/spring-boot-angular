@@ -2,6 +2,7 @@ package com.example.dtos;
 
 import com.example.dtos.overview.AccountOverviewDto;
 import com.example.dtos.overview.BranchOverviewDto;
+import com.example.dtos.overview.UserOverviewDto;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ public class CustomerDto {
     private String cnp;
     private String telephoneNumber;
     private String email;
-    private UserDto user;
+    private UserOverviewDto user;
     private BranchOverviewDto branch;
     private Set<AccountOverviewDto> accounts = new HashSet<>();
 

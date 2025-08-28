@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public class BankAlreadyExistsException extends DomainEntityException {
 
-    public BankAlreadyExistsException(Long id) {
-        super("Bank", id.toString(), " already exists", HttpStatus.BAD_REQUEST);
+    public BankAlreadyExistsException(String name) {
+        super("Bank", name, " already exists", HttpStatus.BAD_REQUEST);
     }
 }

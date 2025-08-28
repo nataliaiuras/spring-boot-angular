@@ -1,9 +1,10 @@
 package com.example.controllers;
 
 import com.example.dtos.CardDto;
+import com.example.dtos.overview.AccountOverviewDto;
 import com.example.dtos.overview.CardOverviewDto;
 import com.example.dtos.response.ApiResponse;
-import com.example.services.impl.CardService;
+import com.example.services.CardService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -26,31 +27,45 @@ public class CardController {
 
     private final CardService cardService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<CardDto>> createCard(@Valid @RequestBody CardDto cardDto) {
-        CardDto createdCard = cardService.createCard(cardDto);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdCard.getId()).toUri();
-        return ResponseEntity.created(location).body(ApiResponse.success(createdCard, "Card created successfully"));
-    }
-
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<CardOverviewDto>>> getAllCards(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                                                          @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
-                                                                          @RequestParam(defaultValue = "id") String sortBy,
-                                                                          @RequestParam(defaultValue = "asc") String sortDir) {
+    public ResponseEntity<ApiResponse<Page<CardOverviewDto>>> getAllCards(
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
         Page<CardOverviewDto> pagedCard = cardService.getAllCards(pageable);
         return ResponseEntity.ok(ApiResponse.success(pagedCard));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ApiResponse<CardDto>> getCard(@PathVariable Long id) {
-        CardDto cardDto = cardService.getCardById(id);
+    public ResponseEntity<ApiResponse<CardOverviewDto>> getCard(@PathVariable Long id) {
+        CardOverviewDto cardDto = cardService.getCardById(id);
         return ResponseEntity.ok(ApiResponse.success(cardDto));
     }
 
+    @GetMapping("{id}/account")
+    public ResponseEntity<ApiResponse<AccountOverviewDto>> getAccount(@PathVariable Long id) {
+        AccountOverviewDto accountOverviewDto = cardService.getAccountByCardId(id);
+        return ResponseEntity.ok(ApiResponse.success(accountOverviewDto));
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<CardDto>> createCard(@Valid @RequestBody CardDto cardDto) {
+        CardDto createdCard = cardService.createCard(cardDto);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdCard.getId())
+                .toUri();
+        return ResponseEntity
+                .created(location)
+                .body(ApiResponse.success(createdCard, "Card created successfully"));
+    }
+
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<CardDto>> updateCard(@PathVariable Long id, @Valid @RequestBody CardDto cardDto) {
+    public ResponseEntity<ApiResponse<CardDto>> updateCard(@PathVariable Long id,
+                                                           @Valid @RequestBody CardDto cardDto) {
         CardDto updateCard = cardService.updateCard(id, cardDto);
         return ResponseEntity.ok(ApiResponse.success(updateCard, "Card updated successfully"));
     }
