@@ -1,4 +1,6 @@
 package com.example.dtos.overview;
 
-public record UserOverviewDto(String username, String role) {
+import com.example.utils.Role;
+
+public record UserOverviewDto(Long id, String username, Role role) {
 }

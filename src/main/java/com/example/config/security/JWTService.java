@@ -41,20 +41,6 @@ public class JWTService {
     }
 
     public String generateToken(String username, String role) {
-       /* Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role);
-        return Jwts
-                .builder()
-                .issuer(issuer)
-                .claims()
-                .add(claims)
-                .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                // .expiration(new Date(System.currentTimeMillis() + (30 * 60 * 1000))) // 30 minutes in milliseconds
-                .expiration(new Date(System.currentTimeMillis() + (expiryTimeInSeconds * 1000)))
-                .and()
-                .signWith(getKey())
-                .compact();*/
         System.out.println("Generating token for username: " + username);
         Map<String, Object> claims = new HashMap<>();
 

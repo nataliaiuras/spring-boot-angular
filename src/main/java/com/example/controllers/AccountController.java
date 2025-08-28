@@ -2,8 +2,10 @@ package com.example.controllers;
 
 import com.example.dtos.AccountDto;
 import com.example.dtos.overview.AccountOverviewDto;
+import com.example.dtos.overview.CardOverviewDto;
+import com.example.dtos.overview.CustomerOverviewDto;
 import com.example.dtos.response.ApiResponse;
-import com.example.services.impl.AccountService;
+import com.example.services.AccountService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -26,27 +28,46 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<AccountDto>> createAccount(@Valid @RequestBody AccountDto accountDto) {
-        AccountDto createdAccount = accountService.createAccount(accountDto);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdAccount.getId()).toUri();
-        return ResponseEntity.created(location).body(ApiResponse.success(createdAccount, "Account created successfully"));
-    }
-
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<AccountOverviewDto>>> getAllAccounts(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                                                                @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
-                                                                                @RequestParam(defaultValue = "id") String sortBy,
-                                                                                @RequestParam(defaultValue = "asc") String sortDir) {
+    public ResponseEntity<ApiResponse<Page<AccountOverviewDto>>> getAllAccounts(
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
         Page<AccountOverviewDto> pagedAccounts = accountService.getAllAccounts(pageable);
         return ResponseEntity.ok(ApiResponse.success(pagedAccounts));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ApiResponse<AccountDto>> getAccount(@PathVariable Long id) {
-        AccountDto accountDto = accountService.getAccountById(id);
+    public ResponseEntity<ApiResponse<AccountOverviewDto>> getAccount(@PathVariable Long id) {
+        AccountOverviewDto accountDto = accountService.getAccountById(id);
         return ResponseEntity.ok(ApiResponse.success(accountDto));
+    }
+
+    @GetMapping("{id}/card")
+    public ResponseEntity<ApiResponse<CardOverviewDto>> getCard(@PathVariable Long id) {
+        CardOverviewDto cardOverviewDto = accountService.getCardByAccountId(id);
+        return ResponseEntity.ok(ApiResponse.success(cardOverviewDto));
+    }
+
+    @GetMapping("{id}/customer")
+    public ResponseEntity<ApiResponse<CustomerOverviewDto>> getCustomer(@PathVariable Long id) {
+        CustomerOverviewDto customerOverviewDto = accountService.getCustomerByAccountId(id);
+        return ResponseEntity.ok(ApiResponse.success(customerOverviewDto));
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<AccountDto>> createAccount(@Valid @RequestBody AccountDto accountDto) {
+        AccountDto createdAccount = accountService.createAccount(accountDto);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdAccount.getId())
+                .toUri();
+        return ResponseEntity
+                .created(location)
+                .body(ApiResponse.success(createdAccount, "Account created successfully"));
     }
 
     @PutMapping("{id}")

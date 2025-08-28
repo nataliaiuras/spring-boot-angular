@@ -5,7 +5,8 @@ import com.example.dtos.request.PasswordUpdateDto;
 import com.example.dtos.request.RoleUpdateDto;
 import com.example.dtos.request.UserRequestDto;
 import com.example.dtos.response.ApiResponse;
-import com.example.services.impl.UserService;
+import com.example.services.UserService;
+import com.example.services.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,9 +26,8 @@ import java.util.Set;
 public class UserController {
 
     private final UserService userService;
-  //  private final AuthService authService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
@@ -39,7 +39,9 @@ public class UserController {
                 .path("/{id}")
                 .buildAndExpand(userId)
                 .toUri();
-        return ResponseEntity.created(location).body(ApiResponse.success("User registered successfully"));
+        return ResponseEntity
+                .created(location)
+                .body(ApiResponse.success("User registered successfully"));
     }
 
     @PostMapping("login")

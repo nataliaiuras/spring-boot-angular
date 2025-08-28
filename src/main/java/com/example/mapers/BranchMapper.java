@@ -8,6 +8,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.Set;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BranchMapper {
 
@@ -27,4 +29,7 @@ public interface BranchMapper {
 
 
     BranchOverviewDto toBranchOverviewDto(Branch branch);
+
+
+    Set<BranchOverviewDto> toBranchOverViewDtos(Set<Branch> branches);
 }

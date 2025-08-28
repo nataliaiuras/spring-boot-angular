@@ -8,6 +8,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.Set;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AccountMapper {
 
@@ -28,4 +30,5 @@ public interface AccountMapper {
     void updateAccount(@MappingTarget Account target, Account source);
 
 
+    Set<AccountOverviewDto> toAccountOverviewDtos(Set<Account> accounts);
 }

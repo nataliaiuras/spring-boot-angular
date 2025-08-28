@@ -2,7 +2,7 @@ package com.example.other;
 
 
 import com.example.entities.User;
-import com.example.services.impl.UserService;
+import com.example.services.impl.UserServiceImpl;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,9 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public PostService(PostRepository postRepository, UserService userService) {
+    public PostService(PostRepository postRepository, UserServiceImpl userService) {
         this.postRepository = postRepository;
         this.userService = userService;
     }

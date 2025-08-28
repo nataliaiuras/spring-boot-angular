@@ -27,4 +27,5 @@ public interface AddressMapper {
     void updateAddress(@MappingTarget Address target, Address source);
 
 
+    Address fromOverviewDtoToAddress(AddressOverviewDto addressOverviewDto);
 }
