@@ -1,8 +1,7 @@
 package com.example.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.example.utils.AddressType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -34,36 +33,27 @@ public class Address implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Min(1)
-    private int number;
+    @Column(name = "address_line_1", nullable = false, length = 100)
+    private String addressLine1;
+
+    @Column(name = "address_line_2", length = 100)
+    private String addressLine2;
 
     @Column(nullable = false, length = 100)
-    @NotNull
-    @Size(min = 2, max = 100)
-    private String street;
-
-    @Column(nullable = false, length = 100)
-    @NotNull
-    @Size(min = 2, max = 100)
     private String city;
 
-    @Column(length = 100)
-    @Size(max = 100)
-    private String county;
-
-    @Column(nullable = false, length = 2)
-    @NotNull
-    @Pattern(regexp = "^[A-Z]{2}$")
-    private String country;
+    @Column(name = "state_province", length = 100)
+    private String stateProvince;
 
     @Column(name = "postal_code", nullable = false)
-    @Pattern(regexp = "^[0-9]{4,10}$")
     private String postalCode;
 
-    @OneToOne(mappedBy = "address")
-    @JsonBackReference
-    private Branch branch;
+    @Column(name = "country_code", nullable = false, length = 2)
+    private String countryCode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AddressType addressType;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

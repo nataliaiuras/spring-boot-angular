@@ -1,8 +1,8 @@
 package com.example.services.impl;
 
-import com.example.dtos.CardDto;
-import com.example.dtos.overview.AccountOverviewDto;
-import com.example.dtos.overview.CardOverviewDto;
+import com.example.dtos.card.CardDto;
+import com.example.dtos.account.AccountOverviewDto;
+import com.example.dtos.card.CardOverviewDto;
 import com.example.entities.Account;
 import com.example.entities.Card;
 import com.example.exceptions.domain.card.CardNotFoundException;

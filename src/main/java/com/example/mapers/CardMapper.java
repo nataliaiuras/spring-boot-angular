@@ -1,7 +1,7 @@
 package com.example.mapers;
 
-import com.example.dtos.CardDto;
-import com.example.dtos.overview.CardOverviewDto;
+import com.example.dtos.card.CardDto;
+import com.example.dtos.card.CardOverviewDto;
 import com.example.entities.Card;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

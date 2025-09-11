@@ -38,23 +38,33 @@ public class Branch implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "branch_code", nullable = false, length = 3, unique = true)
+    @NotNull
+    @Pattern(regexp = "^[A-Z0-9]{3}$")
+    private String branchCode;
+
+    @Column(name = "location_code", nullable = false, length = 2, unique = true)
+    @NotNull
+    @Pattern(regexp = "^\\d{2}$")
+    private String locationCode;
+
+    @Column(name = "bic_code", nullable = false, length = 11, unique = true)
+    @NotNull
+    @Pattern(regexp = "^[A-Z]{6}\\d{2}([A-Z0-9]{3})?$", message = "Invalid BIC code format (DEUTDE22A30 or DEUTDE22XXX)")
+    private String bicCode;
+
+    @Column(name = "name", unique = true, nullable = false, length = 100)
     @NotNull
     @Size(min = 2, max = 100)
     private String name;
 
-    @Column(name = "email", length = 100)
+    @Column(name = "email", unique = true, length = 100)
     @Email
     private String email;
 
-    @Column(name = "telephone_number", length = 20)
-    @Pattern(regexp = "^\\+?[1-9][0-9]{7,14}$")
+    @Column(name = "telephone_number", length = 20, unique = true)
+    @Pattern(regexp = "^\\+[1-9]\\d{1,14}$", message = "Phone number must be in international format (+1234567890)")
     private String telephoneNumber;
-
-    @Column(name = "bic_code", nullable = false, length = 11, unique = true)
-    @NotNull
-    @Pattern(regexp = "^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$")
-    private String bicCode;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
@@ -70,7 +80,7 @@ public class Branch implements Serializable {
     @BatchSize(size = 20)
     @OrderBy("lastName ASC")
     @JsonManagedReference
-    private Set<Customer> customers;
+    private Set<Customer> customers = new HashSet<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

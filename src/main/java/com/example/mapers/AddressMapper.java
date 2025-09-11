@@ -1,7 +1,8 @@
 package com.example.mapers;
 
-import com.example.dtos.AddressDto;
-import com.example.dtos.overview.AddressOverviewDto;
+import com.example.dtos.address.AddressDto;
+import com.example.dtos.address.AddressOverviewDto;
+import com.example.dtos.address.AddressRequestDto;
 import com.example.entities.Address;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,16 +17,18 @@ public interface AddressMapper {
     @Mapping(target = "lastModifiedDate", ignore = true)
     Address toAddress(AddressDto addressDto);
 
-    AddressDto toAddressDto(Address address);
-
-    AddressOverviewDto toAddressOverviewDto(Address address);
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     void updateAddress(@MappingTarget Address target, Address source);
 
+    AddressDto toAddressDto(Address address);
 
-    Address fromOverviewDtoToAddress(AddressOverviewDto addressOverviewDto);
+    AddressOverviewDto toAddressOverviewDto(Address address);
+
+
+    Address toAddress(AddressOverviewDto addressOverviewDto);
+
+    Address toAddress(AddressRequestDto dto);
 }

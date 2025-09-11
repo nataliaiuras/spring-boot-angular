@@ -3,6 +3,7 @@ package com.example.entities;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,14 +37,20 @@ public class Bank implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "bank_code", unique = true, nullable = false, length = 4)
+    private String bankCode;
+
     @Column(name = "name", unique = true, nullable = false, length = 100)
-    @NotNull
-    @Size(min = 2, max = 100)
     private String name;
 
-    @Column(name = "website", length = 255)
+    @Column(name = "website", unique = true)
     @URL
     private String website;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    @JsonManagedReference
+    private Address address;
 
     @OneToMany(mappedBy = "bank", fetch = FetchType.LAZY)
     @BatchSize(size = 20)

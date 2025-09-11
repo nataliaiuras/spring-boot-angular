@@ -1,10 +1,12 @@
 package com.example.controllers;
 
-import com.example.dtos.BranchDto;
-import com.example.dtos.overview.AddressOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
-import com.example.dtos.overview.CustomerOverviewDto;
-import com.example.dtos.response.ApiResponse;
+import com.example.dtos.branch.BranchDto;
+import com.example.dtos.branch.BranchRequestDto;
+import com.example.dtos.address.AddressOverviewDto;
+import com.example.dtos.branch.BranchOverviewDto;
+import com.example.dtos.customer.CustomerOverviewDto;
+import com.example.dtos.customer.CustomerRequestDto;
+import com.example.exceptions.response.ApiResponse;
 import com.example.services.BranchService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -44,41 +46,29 @@ public class BranchController {
         return ResponseEntity.ok(ApiResponse.success(branchDto));
     }
 
-    @GetMapping("{id}/customers")
-    public ResponseEntity<ApiResponse<Set<CustomerOverviewDto>>> getBranchCustomers(@PathVariable Long id) {
-        Set<CustomerOverviewDto> customers = branchService.getBranchCustomersByBranchId(id);
-        return ResponseEntity.ok(ApiResponse.success(customers));
-    }
-
-    @GetMapping("{id}/address")
-    public ResponseEntity<ApiResponse<AddressOverviewDto>> getBranchAddress(@PathVariable Long id) {
-        AddressOverviewDto address = branchService.getBranchAddressByBranchId(id);
-        return ResponseEntity.ok(ApiResponse.success(address));
-    }
-
-    @PostMapping
-    public ResponseEntity<ApiResponse<BranchDto>> createBranch(@Valid @RequestBody BranchDto bankDto) {
-        BranchDto createdBranchDto = branchService.createBranch(bankDto);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdBranchDto.getId())
-                .toUri();
-        return ResponseEntity
-                .created(location)
-                .body(ApiResponse.success(createdBranchDto, "Branch created successfully"));
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse<BranchOverviewDto>> getBranch(@PathVariable Long id) {
         BranchOverviewDto branchDto = branchService.getBranchById(id);
         return ResponseEntity.ok(ApiResponse.success(branchDto));
     }
 
+    @PostMapping
+    public ResponseEntity<ApiResponse<BranchDto>> createBranch(@Valid @RequestBody BranchRequestDto dto) {
+        BranchDto createdDto = branchService.createBranch(dto);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdDto.getId())
+                .toUri();
+        return ResponseEntity
+                .created(location)
+                .body(ApiResponse.success(createdDto, "Branch created successfully"));
+    }
+
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<BranchOverviewDto>> updateBranch(@PathVariable Long id,
-                                                                       @Valid @RequestBody BranchDto branchDto) {
-        BranchOverviewDto updatedBranch = branchService.updateBranch(id, branchDto);
+    public ResponseEntity<ApiResponse<BranchDto>> updateBranch(@PathVariable Long id,
+                                                               @Valid @RequestBody BranchRequestDto dto) {
+        BranchDto updatedBranch = branchService.updateBranch(id, dto);
         return ResponseEntity.ok(ApiResponse.success(updatedBranch, "Branch updated successfully"));
     }
 
@@ -86,6 +76,18 @@ public class BranchController {
     public ResponseEntity<ApiResponse<String>> deleteBranch(@PathVariable Long id) {
         branchService.deleteBranch(id);
         return ResponseEntity.ok(ApiResponse.success("Branch deleted successfully"));
+    }
+
+    @GetMapping("{id}/customers")
+    public ResponseEntity<ApiResponse<Set<CustomerOverviewDto>>> getCustomers(@PathVariable Long id) {
+        Set<CustomerOverviewDto> customers = branchService.getCustomersByBranchId(id);
+        return ResponseEntity.ok(ApiResponse.success(customers));
+    }
+
+    @GetMapping("{id}/address")
+    public ResponseEntity<ApiResponse<AddressOverviewDto>> getAddress(@PathVariable Long id) {
+        AddressOverviewDto address = branchService.getAddressByBranchId(id);
+        return ResponseEntity.ok(ApiResponse.success(address));
     }
 
 

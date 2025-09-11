@@ -1,7 +1,8 @@
 package com.example.mapers;
 
 
-import com.example.dtos.TransactionDto;
+import com.example.dtos.transaction.TransactionDto;
+import com.example.dtos.transaction.TransactionOverviewDto;
 import com.example.entities.Transaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,4 +21,5 @@ public interface TransactionMapper {
 
     Set<TransactionDto> toTransactionDtos(Set<Transaction> transactions);
 
+    TransactionOverviewDto toTransactionOverviewDto(Transaction transaction);
 }

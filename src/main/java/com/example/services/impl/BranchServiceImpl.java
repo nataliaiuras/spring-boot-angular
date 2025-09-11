@@ -1,15 +1,16 @@
 package com.example.services.impl;
 
-import com.example.dtos.BranchDto;
-import com.example.dtos.overview.AddressOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
-import com.example.dtos.overview.CustomerOverviewDto;
+import com.example.dtos.address.AddressOverviewDto;
+import com.example.dtos.address.AddressRequestDto;
+import com.example.dtos.branch.BranchDto;
+import com.example.dtos.branch.BranchOverviewDto;
+import com.example.dtos.branch.BranchRequestDto;
+import com.example.dtos.customer.CustomerOverviewDto;
 import com.example.entities.Address;
 import com.example.entities.Bank;
 import com.example.entities.Branch;
 import com.example.entities.Customer;
 import com.example.exceptions.BusinessException;
-import com.example.exceptions.domain.address.AddressIsAlreadyAssignedException;
 import com.example.exceptions.domain.address.AddressNotFoundException;
 import com.example.exceptions.domain.bank.BankNotFoundException;
 import com.example.exceptions.domain.branch.BranchAlreadyExistsException;
@@ -48,44 +49,50 @@ public class BranchServiceImpl implements BranchService {
     }
 
     public BranchOverviewDto getBranchById(Long id) {
-        Branch branch= branchRepository.findById(id)
-                .orElseThrow(() -> new BranchNotFoundException(id));
+        Branch branch = branchRepository.findById(id).orElseThrow(() -> new BranchNotFoundException(id));
         return branchMapper.toBranchOverviewDto(branch);
     }
 
-    public BranchDto createBranch(BranchDto branchDto) {
-        validateBranchCreationInput(branchDto);
-        Bank bank = bankRepository.findById(branchDto.getBank().id())
-                .orElseThrow(() -> new BankNotFoundException(branchDto.getBank().id()));
-        Address address = createAndSaveAddress(branchDto.getAddress());
-        Branch branch = branchMapper.toBranch(branchDto);
+    public BranchDto createBranch(BranchRequestDto dto) {
+        validateBranchCreationInput(dto);
+        Bank bank = bankRepository.findById(dto.getBankId()).orElseThrow(() -> new BankNotFoundException(dto.getBankId()));
+        Address address = createAndSaveAddress(dto.getAddress());
+
+        String bankCode = bank.getBankCode();
+        String countryCode = bank.getAddress().getCountryCode();
+        String locationCode = dto.getLocationCode();
+        String branchCode = dto.getBranchCode() != null ? dto.getBranchCode() : "XXX";
+        String generatedBicCode = bankCode + countryCode + locationCode + branchCode;
+
+        Branch branch = branchMapper.toBranch(dto);
         branch.setBank(bank);
         branch.setAddress(address);
+        branch.setBicCode(generatedBicCode);
         Branch savedBranch = branchRepository.save(branch);
         return branchMapper.toBranchDto(savedBranch);
     }
 
-    private void validateBranchCreationInput(BranchDto branchDto) {
-        if (branchRepository.findByName(branchDto.getName()).isPresent()) {
-            throw new BranchAlreadyExistsException(branchDto.getName());
+    private void validateBranchCreationInput(BranchRequestDto dto) {
+        if (branchRepository.findByName(dto.getName()).isPresent()) {
+            throw new BranchAlreadyExistsException(dto.getName());
         }
-        if (branchDto.getBank() == null || branchDto.getBank().id() == null) {
+        if (dto.getBankId() == null) {
             throw new BusinessException("Bank ID is required when creating a branch", HttpStatus.BAD_REQUEST);
         }
-        if (branchDto.getAddress() == null) {
+        if (dto.getAddress() == null) {
             throw new BusinessException("Address is required when creating a branch", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private Address createAndSaveAddress(AddressOverviewDto addressOverviewDto) {
-        Address address = addressMapper.fromOverviewDtoToAddress(addressOverviewDto);
+    private Address createAndSaveAddress(AddressRequestDto dto) {
+        Address address = addressMapper.toAddress(dto);
         return addressRepository.save(address);
     }
 
-    public BranchOverviewDto updateBranch(Long id, BranchDto branchDto) {
+    public BranchDto updateBranch(Long id, BranchRequestDto dto) {
         Branch branch = branchRepository.findById(id).orElseThrow(() -> new BranchNotFoundException(id));
-        branchMapper.updateBranch(branch, branchMapper.toBranch(branchDto));
-        return branchMapper.toBranchOverviewDto(branchRepository.save(branch));
+        branchMapper.updateBranch(branch, branchMapper.toBranch(dto));
+        return branchMapper.toBranchDto(branchRepository.save(branch));
     }
 
     public void deleteBranch(Long id) {
@@ -98,22 +105,18 @@ public class BranchServiceImpl implements BranchService {
         branchRepository.delete(branch);
     }
 
-    @Override
-    public Set<CustomerOverviewDto> getBranchCustomersByBranchId(Long branchId) {
-        Branch branch = branchRepository.findById(branchId)
-                .orElseThrow(() -> new BranchNotFoundException(branchId));
+    public Set<CustomerOverviewDto> getCustomersByBranchId(Long id) {
+        Branch branch = branchRepository.findById(id).orElseThrow(() -> new BranchNotFoundException(id));
         Set<Customer> customers = branch.getCustomers();
-        return customerMapper.toCustomerOverviewDtoSet(customers);
+        return customerMapper.toOverviewDtos(customers);
     }
 
-
-    public AddressOverviewDto getBranchAddressByBranchId(Long branchId) {
-        Branch branch = branchRepository.findById(branchId)
-                .orElseThrow(() -> new BranchNotFoundException(branchId));
+    public AddressOverviewDto getAddressByBranchId(Long id) {
+        Branch branch = branchRepository.findById(id).orElseThrow(() -> new BranchNotFoundException(id));
         Address address = branch.getAddress();
         if (address != null) {
             return addressMapper.toAddressOverviewDto(address);
-        } else throw new AddressNotFoundException(branchId);
+        } else throw new AddressNotFoundException(id);
     }
 
 

@@ -17,6 +17,12 @@ public abstract class DomainEntityException extends BusinessException {
                 status);
     }
 
+    protected DomainEntityException(String entityType, String identifier, String operation, String detail, HttpStatus status) {
+        super(String.format("%s with identifier '%s' %s '%s'", entityType, identifier, operation, detail),
+                generateErrorCode(entityType, operation),
+                status);
+    }
+
     private static String generateErrorCode(String entityType, String operation) {
         return String.format("%s_%s", entityType.toUpperCase(), operation.toUpperCase());
     }

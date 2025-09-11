@@ -1,7 +1,8 @@
 package com.example.mapers;
 
-import com.example.dtos.CustomerDto;
-import com.example.dtos.overview.CustomerOverviewDto;
+import com.example.dtos.customer.CustomerDto;
+import com.example.dtos.customer.CustomerOverviewDto;
+import com.example.dtos.customer.CustomerRequestDto;
 import com.example.entities.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,9 +17,7 @@ public interface CustomerMapper {
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
-    Customer toCustomer(CustomerDto customerDto);
-
-    CustomerDto toCustomerDto(Customer customer);
+    Customer toCustomer(CustomerRequestDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "version", ignore = true)
@@ -26,8 +25,12 @@ public interface CustomerMapper {
     @Mapping(target = "lastModifiedDate", ignore = true)
     void updateCustomer(@MappingTarget Customer target, Customer source);
 
+    CustomerDto toCustomerDto(Customer customer);
 
-    CustomerOverviewDto toCustomerOverviewDto(Customer customer);
+    CustomerOverviewDto toOverviewDto(Customer customer);
 
-    Set<CustomerOverviewDto> toCustomerOverviewDtoSet(Set<Customer> customers);
+
+    CustomerRequestDto toRequestDto(Customer customer);
+
+    Set<CustomerOverviewDto> toOverviewDtos(Set<Customer> customers);
 }

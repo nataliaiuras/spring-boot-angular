@@ -1,5 +1,5 @@
 package com.example.utils;
 
 public enum TransactionType {
-    ACCOUNT, INTERNAL, EXTERNAL
+    TRANSFER, ACCOUNT, INTERNAL, EXTERNAL
 }

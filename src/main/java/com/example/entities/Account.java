@@ -1,7 +1,8 @@
 package com.example.entities;
 
 import com.example.utils.AccountType;
-import com.example.utils.Currency;
+import com.example.utils.AppConstants;
+import com.example.utils.CurrencyType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -49,15 +50,29 @@ public class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @NotNull
-    private Currency currency;
+    private CurrencyType currency;
 
     @Column(name = "iban_code", nullable = false, unique = true, length = 34)
     @Pattern(regexp = "^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$")
     private String ibanCode;
 
-    @Column(nullable = false)
+    @Column(name = "current_balance")
     @PositiveOrZero
-    private BigDecimal balance;
+    private BigDecimal currentBalance;
+
+    @Column(name = "available_balance")
+    @PositiveOrZero
+    private BigDecimal availableBalance;
+
+    @Column(name = "credit_limit")
+    private BigDecimal creditLimit = AppConstants.DEFAULT_AMOUNT_CREDIT_LIMIT;
+
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @Column(name = "daily_transfer_limit")
+    @PositiveOrZero
+    private BigDecimal dailyTransferLimit = AppConstants.DEFAULT_AMOUNT_DAILY_LIMIT;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
