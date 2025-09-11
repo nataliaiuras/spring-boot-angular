@@ -1,8 +1,8 @@
 package com.example.services;
 
-import com.example.dtos.CardDto;
-import com.example.dtos.overview.AccountOverviewDto;
-import com.example.dtos.overview.CardOverviewDto;
+import com.example.dtos.card.CardDto;
+import com.example.dtos.account.AccountOverviewDto;
+import com.example.dtos.card.CardOverviewDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

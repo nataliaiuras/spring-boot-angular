@@ -1,10 +1,10 @@
 package com.example.services;
 
-import com.example.dtos.UserDto;
-import com.example.dtos.request.PasswordUpdateDto;
-import com.example.dtos.request.RoleUpdateDto;
-import com.example.dtos.request.UserRequestDto;
-import com.example.dtos.response.ApiResponse;
+import com.example.dtos.user.UserDto;
+import com.example.dtos.user.PasswordUpdateDto;
+import com.example.dtos.user.RoleUpdateDto;
+import com.example.dtos.user.UserRequestDto;
+import com.example.exceptions.response.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

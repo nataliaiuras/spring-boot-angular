@@ -1,10 +1,8 @@
 package com.example.entities;
 
-import com.example.exceptions.domain.transaction.InsufficientFundsException;
-import com.example.utils.Status;
+import com.example.utils.TransactionStatus;
 import com.example.utils.TransactionType;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -17,9 +15,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 @Entity
@@ -50,7 +45,7 @@ public class Transaction implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @NotNull
-    private Status status;
+    private TransactionStatus status;
 
     @Column(name = "transaction_date", nullable = false)
     @NotNull

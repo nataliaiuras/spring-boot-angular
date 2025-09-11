@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Service
@@ -39,8 +40,8 @@ public class JWTService {
         }*/
     }
 
-    public String generateToken(String username) {
-        log.info("Generating token for username: {}", username);
+    public String generateToken(String username, String role) {
+        log.info("Generating token for username: " + username);
         Map<String, Object> claims = new HashMap<>();
 
         String token = Jwts
@@ -50,7 +51,9 @@ public class JWTService {
                 .add(claims)
                 .subject(username)  // Make sure this is set
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + (expiryTimeInSeconds * 1000)))
+               // .expiration(new Date(System.currentTimeMillis() + (expiryTimeInSeconds * 1000)))
+               // .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 72)))
+                .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(14)))
                 .and()
                 .signWith(getKey())
                 .compact();

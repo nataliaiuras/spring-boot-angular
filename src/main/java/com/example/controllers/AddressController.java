@@ -1,9 +1,9 @@
 package com.example.controllers;
 
-import com.example.dtos.AddressDto;
-import com.example.dtos.overview.AddressOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
-import com.example.dtos.response.ApiResponse;
+import com.example.dtos.address.AddressDto;
+import com.example.dtos.address.AddressOverviewDto;
+import com.example.dtos.address.AddressRequestDto;
+import com.example.exceptions.response.ApiResponse;
 import com.example.services.AddressService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -40,34 +40,28 @@ public class AddressController {
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse<AddressOverviewDto>> getAddress(@PathVariable Long id) {
-        AddressOverviewDto addressDto = addressService.getAddressById(id);
-        return ResponseEntity.ok(ApiResponse.success(addressDto));
-    }
-
-    @GetMapping("{id}/branch")
-    public ResponseEntity<ApiResponse<BranchOverviewDto>> getBranch(@PathVariable Long id) {
-        BranchOverviewDto branch = addressService.getBranchByAddressId(id);
-        return ResponseEntity.ok(ApiResponse.success(branch));
+        AddressOverviewDto dto = addressService.getAddressById(id);
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<AddressDto>> createAddress(@Valid @RequestBody AddressDto addressDto) {
-        AddressDto createdAddress = addressService.createAddress(addressDto);
+    public ResponseEntity<ApiResponse<AddressDto>> createAddress(@Valid @RequestBody AddressRequestDto dto) {
+        AddressDto createdDto = addressService.createAddress(dto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(createdAddress.getId())
+                .buildAndExpand(createdDto.getId())
                 .toUri();
         return ResponseEntity
                 .created(location)
-                .body(ApiResponse.success(createdAddress, "Address created successfully"));
+                .body(ApiResponse.success(createdDto, "Address created successfully"));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse<AddressDto>> updateAddress(@PathVariable Long id,
-                                                                 @Valid @RequestBody AddressDto addressDto) {
-        AddressDto updateAddress = addressService.updateAddress(id, addressDto);
-        return ResponseEntity.ok(ApiResponse.success(updateAddress, "Address updated successfully"));
+                                                                 @Valid @RequestBody AddressRequestDto dto) {
+        AddressDto updateDto = addressService.updateAddress(id, dto);
+        return ResponseEntity.ok(ApiResponse.success(updateDto, "Address updated successfully"));
     }
 
     @DeleteMapping("{id}")

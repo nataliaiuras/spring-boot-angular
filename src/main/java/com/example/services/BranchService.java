@@ -1,9 +1,10 @@
 package com.example.services;
 
-import com.example.dtos.BranchDto;
-import com.example.dtos.overview.AddressOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
-import com.example.dtos.overview.CustomerOverviewDto;
+import com.example.dtos.address.AddressOverviewDto;
+import com.example.dtos.branch.BranchDto;
+import com.example.dtos.branch.BranchOverviewDto;
+import com.example.dtos.branch.BranchRequestDto;
+import com.example.dtos.customer.CustomerOverviewDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,13 +16,13 @@ public interface BranchService {
 
     BranchOverviewDto getBranchById(Long id);
 
-    BranchDto createBranch(BranchDto branchDto);
+    BranchDto createBranch(BranchRequestDto dto);
 
-    BranchOverviewDto updateBranch(Long id, BranchDto branchDto);
+    BranchDto updateBranch(Long id, BranchRequestDto dto);
 
     void deleteBranch(Long id);
 
-    Set<CustomerOverviewDto> getBranchCustomersByBranchId(Long id);
+    Set<CustomerOverviewDto> getCustomersByBranchId(Long id);
 
-    AddressOverviewDto getBranchAddressByBranchId(Long id);
+    AddressOverviewDto getAddressByBranchId(Long id);
 }

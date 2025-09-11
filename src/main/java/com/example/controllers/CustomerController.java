@@ -1,11 +1,12 @@
 package com.example.controllers;
 
-import com.example.dtos.CustomerDto;
-import com.example.dtos.overview.AccountOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
-import com.example.dtos.overview.CustomerOverviewDto;
-import com.example.dtos.overview.UserOverviewDto;
-import com.example.dtos.response.ApiResponse;
+import com.example.dtos.account.AccountOverviewDto;
+import com.example.dtos.branch.BranchOverviewDto;
+import com.example.dtos.customer.CustomerDto;
+import com.example.dtos.customer.CustomerOverviewDto;
+import com.example.dtos.customer.CustomerRequestDto;
+import com.example.dtos.user.UserOverviewDto;
+import com.example.exceptions.response.ApiResponse;
 import com.example.services.CustomerService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -37,58 +38,58 @@ public class CustomerController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
-        Page<CustomerOverviewDto> pagedCustomer = customerService.getAllCustomers(pageable);
-        return ResponseEntity.ok(ApiResponse.success(pagedCustomer));
+        Page<CustomerOverviewDto> dtoPage = customerService.getAllCustomers(pageable);
+        return ResponseEntity.ok(ApiResponse.success(dtoPage));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse<CustomerOverviewDto>> getCustomer(@PathVariable Long id) {
-        CustomerOverviewDto customerDto = customerService.getCustomerById(id);
-        return ResponseEntity.ok(ApiResponse.success(customerDto));
-    }
-
-    @GetMapping("{id}/accounts")
-    public ResponseEntity<ApiResponse<Set<AccountOverviewDto>>> getAccounts(@PathVariable Long id) {
-        Set<AccountOverviewDto> accountOverviewDtoSet = customerService.getAccountsByCustomerId(id);
-        return ResponseEntity.ok(ApiResponse.success(accountOverviewDtoSet));
-    }
-
-    @GetMapping("{id}/branch")
-    public ResponseEntity<ApiResponse<BranchOverviewDto>> getBranch(@PathVariable Long id) {
-        BranchOverviewDto branchOverviewDto = customerService.getBranchByCustomerId(id);
-        return ResponseEntity.ok(ApiResponse.success(branchOverviewDto));
-    }
-
-    @GetMapping("{id}/user")
-    public ResponseEntity<ApiResponse<UserOverviewDto>> getUser(@PathVariable Long id) {
-        UserOverviewDto userOverviewDto = customerService.getUserByCustomerId(id);
-        return ResponseEntity.ok(ApiResponse.success(userOverviewDto));
+        CustomerOverviewDto dto = customerService.getCustomerById(id);
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CustomerDto>> createCustomer(@Valid @RequestBody CustomerDto customerDto) {
-        CustomerDto createdCustomer = customerService.createCustomer(customerDto);
+    public ResponseEntity<ApiResponse<CustomerDto>> createCustomer(@Valid @RequestBody CustomerRequestDto dto) {
+        CustomerDto createdDto = customerService.createCustomer(dto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(createdCustomer.getId())
+                .buildAndExpand(createdDto.getId())
                 .toUri();
         return ResponseEntity
                 .created(location)
-                .body(ApiResponse.success(createdCustomer, "Customer created successfully"));
+                .body(ApiResponse.success(createdDto, "Customer created successfully"));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(@PathVariable Long id,
-                                                                   @Valid @RequestBody CustomerDto customerDto) {
-        CustomerDto updateCustomer = customerService.updateCustomer(id, customerDto);
-        return ResponseEntity.ok(ApiResponse.success(updateCustomer, "Customer updated successfully"));
+                                                                   @Valid @RequestBody CustomerRequestDto dto) {
+        CustomerDto updatedDto = customerService.updateCustomer(id, dto);
+        return ResponseEntity.ok(ApiResponse.success(updatedDto, "Customer updated successfully"));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse<String>> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
         return ResponseEntity.ok(ApiResponse.success("Customer  deleted successfully"));
+    }
+
+    @GetMapping("{id}/accounts")
+    public ResponseEntity<ApiResponse<Set<AccountOverviewDto>>> getAccounts(@PathVariable Long id) {
+        Set<AccountOverviewDto> dtos = customerService.getAccountsByCustomerId(id);
+        return ResponseEntity.ok(ApiResponse.success(dtos));
+    }
+
+    @GetMapping("{id}/branch")
+    public ResponseEntity<ApiResponse<BranchOverviewDto>> getBranch(@PathVariable Long id) {
+        BranchOverviewDto dto = customerService.getBranchByCustomerId(id);
+        return ResponseEntity.ok(ApiResponse.success(dto));
+    }
+
+    @GetMapping("{id}/user")
+    public ResponseEntity<ApiResponse<UserOverviewDto>> getUser(@PathVariable Long id) {
+        UserOverviewDto dto = customerService.getUserByCustomerId(id);
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
 

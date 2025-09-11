@@ -1,8 +1,10 @@
 package com.example.services;
 
-import com.example.dtos.BankDto;
-import com.example.dtos.overview.BankOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
+import com.example.dtos.bank.BankDto;
+import com.example.dtos.bank.BankOverviewDto;
+import com.example.dtos.bank.BankUpdateDto;
+import com.example.dtos.branch.BranchOverviewDto;
+import com.example.dtos.bank.BankRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,9 +16,11 @@ public interface BankService {
 
     BankOverviewDto getBankById(Long id);
 
-    BankDto createBank(BankDto bankDto);
+    BankDto createBank(BankRequestDto dto);
 
-    BankOverviewDto updateBank(Long id, BankDto bankDto);
+    BankDto updateBank(Long id, BankUpdateDto dto);
+
+    BankDto patchBank(Long id, BankUpdateDto dto);
 
     void deleteBank(Long id);
 

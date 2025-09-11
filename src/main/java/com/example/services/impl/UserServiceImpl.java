@@ -1,11 +1,11 @@
 package com.example.services.impl;
 
 import com.example.config.security.JWTService;
-import com.example.dtos.UserDto;
-import com.example.dtos.request.PasswordUpdateDto;
-import com.example.dtos.request.RoleUpdateDto;
-import com.example.dtos.request.UserRequestDto;
-import com.example.dtos.response.ApiResponse;
+import com.example.dtos.user.UserDto;
+import com.example.dtos.user.PasswordUpdateDto;
+import com.example.dtos.user.RoleUpdateDto;
+import com.example.dtos.user.UserRequestDto;
+import com.example.exceptions.response.ApiResponse;
 import com.example.entities.User;
 import com.example.exceptions.domain.user.InvalidCredentialsException;
 import com.example.exceptions.domain.user.UserAlreadyExistsException;

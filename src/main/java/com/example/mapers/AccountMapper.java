@@ -1,7 +1,9 @@
 package com.example.mapers;
 
-import com.example.dtos.AccountDto;
-import com.example.dtos.overview.AccountOverviewDto;
+import com.example.dtos.account.AccountDto;
+import com.example.dtos.account.AccountBalanceDto;
+import com.example.dtos.account.AccountOverviewDto;
+import com.example.dtos.account.AccountRequestDto;
 import com.example.entities.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,7 +23,9 @@ public interface AccountMapper {
 
     AccountDto toAccountDto(Account account);
 
-    AccountOverviewDto toAccountOverviewDto(Account account);
+    AccountDto toAccountDto(AccountRequestDto dto);
+
+    Account toAccount(AccountRequestDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "version", ignore = true)
@@ -30,5 +34,9 @@ public interface AccountMapper {
     void updateAccount(@MappingTarget Account target, Account source);
 
 
+    AccountOverviewDto toAccountOverviewDto(Account account);
+
     Set<AccountOverviewDto> toAccountOverviewDtos(Set<Account> accounts);
+
+    AccountBalanceDto toAccountBalanceDto(Account account);
 }

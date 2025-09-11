@@ -55,13 +55,18 @@ public class Customer implements Serializable {
     @Pattern(regexp = "^[0-9]{13}$")
     private String cnp;
 
-    @Column(name = "telephone_number", length = 20)
-    @Pattern(regexp = "^\\+?[1-9][0-9]{7,14}$")
+    @Column(name = "telephone_number", length = 20, unique = true)
+    @Pattern(regexp = "^\\+[1-9]\\d{1,14}$", message = "Phone number must be in international format (+1234567890)")
     private String telephoneNumber;
 
     @Column(unique = true, length = 100)
     @Email
     private String email;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    @JsonManagedReference
+    private Address address;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

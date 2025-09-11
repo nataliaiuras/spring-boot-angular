@@ -1,10 +1,11 @@
 package com.example.services.impl;
 
-import com.example.dtos.CustomerDto;
-import com.example.dtos.overview.AccountOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
-import com.example.dtos.overview.CustomerOverviewDto;
-import com.example.dtos.overview.UserOverviewDto;
+import com.example.dtos.customer.CustomerDto;
+import com.example.dtos.customer.CustomerOverviewDto;
+import com.example.dtos.customer.CustomerRequestDto;
+import com.example.dtos.account.AccountOverviewDto;
+import com.example.dtos.branch.BranchOverviewDto;
+import com.example.dtos.user.UserOverviewDto;
 import com.example.entities.Account;
 import com.example.entities.Branch;
 import com.example.entities.Customer;
@@ -34,31 +35,30 @@ public class CustomerServiceImpl implements CustomerService {
     private final AccountMapper accountMapper;
 
     public Page<CustomerOverviewDto> getAllCustomers(Pageable pageable) {
-        Page<Customer> cardPage = customerRepository.findAll(pageable);
-        return cardPage.map(customerMapper::toCustomerOverviewDto);
-    }
-
-    public CustomerDto createCustomer(CustomerDto customerDto) {
-        return customerMapper.toCustomerDto(customerRepository.save(customerMapper.toCustomer(customerDto)));
+        Page<Customer> page = customerRepository.findAll(pageable);
+        return page.map(customerMapper::toOverviewDto);
     }
 
     public CustomerOverviewDto getCustomerById(Long id) {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
-        return customerMapper.toCustomerOverviewDto(customer);
+        return customerMapper.toOverviewDto(customer);
     }
 
-    public CustomerDto updateCustomer(Long id, CustomerDto customerDto) {
-        Customer card = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
-        customerMapper.updateCustomer(card, customerMapper.toCustomer(customerDto));
-        return customerMapper.toCustomerDto(customerRepository.save(card));
+    public CustomerDto createCustomer(CustomerRequestDto dto) {
+        Customer customer = customerRepository.save(customerMapper.toCustomer(dto));
+        return customerMapper.toCustomerDto(customer);
+    }
+
+    public CustomerDto updateCustomer(Long id, CustomerRequestDto dto) {
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
+        customerMapper.updateCustomer(customer, customerMapper.toCustomer(dto));
+        Customer savedCustomer = customerRepository.save(customer);
+        return customerMapper.toCustomerDto(savedCustomer);
     }
 
     public void deleteCustomer(Long id) {
-        customerRepository.delete(customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id)));
-    }
-
-    public Set<CustomerDto> getBranchCustomersByBranchId(Long branchId) {
-        return null;
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
+        customerRepository.delete(customer);
     }
 
     @Override

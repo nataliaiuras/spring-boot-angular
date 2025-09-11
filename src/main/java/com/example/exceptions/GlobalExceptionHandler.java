@@ -1,8 +1,8 @@
 package com.example.exceptions;
 
 import com.example.exceptions.domain.DomainEntityException;
-import com.example.dtos.response.ErrorResponse;
-import com.example.dtos.response.ValidationErrorResponse;
+import com.example.exceptions.response.ErrorResponse;
+import com.example.exceptions.response.ValidationErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

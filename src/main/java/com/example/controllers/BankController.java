@@ -1,9 +1,11 @@
 package com.example.controllers;
 
-import com.example.dtos.BankDto;
-import com.example.dtos.overview.BankOverviewDto;
-import com.example.dtos.overview.BranchOverviewDto;
-import com.example.dtos.response.ApiResponse;
+import com.example.dtos.bank.BankDto;
+import com.example.dtos.bank.BankUpdateDto;
+import com.example.dtos.branch.BranchOverviewDto;
+import com.example.dtos.bank.BankOverviewDto;
+import com.example.dtos.bank.BankRequestDto;
+import com.example.exceptions.response.ApiResponse;
 import com.example.services.BankService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -49,36 +51,39 @@ public class BankController {
         return ResponseEntity.ok(ApiResponse.success(bankDto));
     }
 
-    @GetMapping("{id}/branches")
-    public ResponseEntity<ApiResponse<Set<BranchOverviewDto>>> getBranches(@PathVariable Long id) {
-        Set<BranchOverviewDto> branches = bankService.getBranchesByBankId(id);
-        return ResponseEntity.ok(ApiResponse.success(branches));
-    }
-
     @PostMapping
-    public ResponseEntity<ApiResponse<BankDto>> createBank(@Valid @RequestBody BankDto bankDto) {
-        BankDto createdBankDto = bankService.createBank(bankDto);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdBankDto.getId())
-                .toUri();
-        return ResponseEntity
-                .created(location)
-                .body(ApiResponse.success(createdBankDto, "Bank created successfully"));
+    public ResponseEntity<ApiResponse<BankDto>> createBank(@Valid @RequestBody BankRequestDto dto) {
+        BankDto createdDto = bankService.createBank(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(createdDto.getId()).toUri();
+        return ResponseEntity.created(location)
+                .body(ApiResponse.success(createdDto, "Bank created successfully"));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<BankOverviewDto>> updateBank(@PathVariable Long id,
-                                                                   @Valid @RequestBody BankDto bankDto) {
-        BankOverviewDto updatedBankDto = bankService.updateBank(id, bankDto);
-        return ResponseEntity.ok(ApiResponse.success(updatedBankDto, "Bank updated successfully"));
+    public ResponseEntity<ApiResponse<BankDto>> updateBank(@PathVariable Long id,
+                                                           @Valid @RequestBody BankUpdateDto dto) {
+        BankDto updatedDto = bankService.updateBank(id, dto);
+        return ResponseEntity.ok(ApiResponse.success(updatedDto, "Bank updated successfully"));
+    }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<ApiResponse<BankDto>> patchBank(@PathVariable Long id,
+                                                           @Valid @RequestBody BankUpdateDto dto) {
+        BankDto updatedDto = bankService.patchBank(id, dto);
+        return ResponseEntity.ok(ApiResponse.success(updatedDto, "Bank updated successfully"));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse<String>> deleteBank(@PathVariable Long id) {
         bankService.deleteBank(id);
         return ResponseEntity.ok(ApiResponse.success("Bank deleted successfully"));
+    }
+
+    @GetMapping("{id}/branches")
+    public ResponseEntity<ApiResponse<Set<BranchOverviewDto>>> getBranches(@PathVariable Long id) {
+        Set<BranchOverviewDto> branches = bankService.getBranchesByBankId(id);
+        return ResponseEntity.ok(ApiResponse.success(branches));
     }
 
 

@@ -3,6 +3,7 @@ package com.example.services.impl;
 import com.example.entities.User;
 import com.example.entities.UserPrincipal;
 import com.example.repository.UserRepository;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
+            log.warn("User Not Found");
             throw new UsernameNotFoundException("user not found");
         }
 
