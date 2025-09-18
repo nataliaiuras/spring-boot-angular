@@ -36,10 +36,10 @@ export class BranchForm {
     this.branchForm = this.fb.group({
       id: [data?.id ?? null],
       bicCode: [data?.bicCode ?? '', Validators.required],
-      swiftCode: [data?.swiftCode ?? '', Validators.required],
+      swiftCode: [data?.locationCode ?? '', Validators.required],
       name: [data?.name ?? '', Validators.required],
       email: [data?.email ?? '', Validators.required],
-      telephoneNumber: [data?.telephoneNumber ?? '', Validators.required],
+      telephoneNumber: [data?.phoneNumber ?? '', Validators.required],
       address: [data?.address ?? '', Validators.required]
     });
   }

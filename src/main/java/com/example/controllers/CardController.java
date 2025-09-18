@@ -1,8 +1,8 @@
 package com.example.controllers;
 
-import com.example.dtos.card.CardDto;
-import com.example.dtos.account.AccountOverviewDto;
-import com.example.dtos.card.CardOverviewDto;
+import com.example.models.dtos.card.CardDto;
+import com.example.models.dtos.account.AccountOverviewDto;
+import com.example.models.dtos.card.CardOverviewDto;
 import com.example.exceptions.response.ApiResponse;
 import com.example.services.CardService;
 import jakarta.validation.Valid;

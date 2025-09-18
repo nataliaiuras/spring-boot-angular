@@ -1,25 +1,27 @@
 package com.example.services.impl;
 
-import com.example.dtos.address.AddressOverviewDto;
-import com.example.dtos.address.AddressRequestDto;
-import com.example.dtos.branch.BranchDto;
-import com.example.dtos.branch.BranchOverviewDto;
-import com.example.dtos.branch.BranchRequestDto;
-import com.example.dtos.customer.CustomerOverviewDto;
-import com.example.entities.Address;
-import com.example.entities.Bank;
-import com.example.entities.Branch;
-import com.example.entities.Customer;
+import com.example.config.IbanConfig;
+import com.example.models.dtos.address.AddressOverviewDto;
+import com.example.models.dtos.address.AddressRequestDto;
+import com.example.models.dtos.branch.BranchDto;
+import com.example.models.dtos.branch.BranchOverviewDto;
+import com.example.models.dtos.branch.BranchRequestDto;
+import com.example.models.dtos.customer.CustomerOverviewDto;
+import com.example.models.entities.Address;
+import com.example.models.entities.Institute;
+import com.example.models.entities.Branch;
+import com.example.models.entities.Customer;
 import com.example.exceptions.BusinessException;
 import com.example.exceptions.domain.address.AddressNotFoundException;
-import com.example.exceptions.domain.bank.BankNotFoundException;
+import com.example.exceptions.domain.institute.InstituteNotFoundException;
 import com.example.exceptions.domain.branch.BranchAlreadyExistsException;
 import com.example.exceptions.domain.branch.BranchNotFoundException;
-import com.example.mapers.AddressMapper;
-import com.example.mapers.BranchMapper;
-import com.example.mapers.CustomerMapper;
+import com.example.utils.enums.AddressType;
+import com.example.utils.mapers.AddressMapper;
+import com.example.utils.mapers.BranchMapper;
+import com.example.utils.mapers.CustomerMapper;
 import com.example.repository.AddressRepository;
-import com.example.repository.BankRepository;
+import com.example.repository.InstituteRepository;
 import com.example.repository.BranchRepository;
 import com.example.services.BranchService;
 import jakarta.transaction.Transactional;
@@ -37,11 +39,12 @@ import java.util.Set;
 public class BranchServiceImpl implements BranchService {
 
     private final BranchRepository branchRepository;
-    private final BankRepository bankRepository;
+    private final InstituteRepository instituteRepository;
     private final BranchMapper branchMapper;
     private final AddressRepository addressRepository;
     private final AddressMapper addressMapper;
     private final CustomerMapper customerMapper;
+    private final IbanConfig ibanConfig;
 
     public Page<BranchOverviewDto> getAllBranches(Pageable pageable) {
         Page<Branch> branchPage = branchRepository.findAll(pageable);
@@ -55,17 +58,18 @@ public class BranchServiceImpl implements BranchService {
 
     public BranchDto createBranch(BranchRequestDto dto) {
         validateBranchCreationInput(dto);
-        Bank bank = bankRepository.findById(dto.getBankId()).orElseThrow(() -> new BankNotFoundException(dto.getBankId()));
+        Institute institute = instituteRepository.findById(dto.getInstituteId()).orElseThrow(() -> new InstituteNotFoundException(dto.getInstituteId()));
         Address address = createAndSaveAddress(dto.getAddress());
 
-        String bankCode = bank.getBankCode();
-        String countryCode = bank.getAddress().getCountryCode();
+        String bankCode = institute.getBankCode();
+       // String countryCode = institute.getAddress().getCountryCode();
+        String countryCode = ibanConfig.getCountryCode();
         String locationCode = dto.getLocationCode();
         String branchCode = dto.getBranchCode() != null ? dto.getBranchCode() : "XXX";
         String generatedBicCode = bankCode + countryCode + locationCode + branchCode;
 
         Branch branch = branchMapper.toBranch(dto);
-        branch.setBank(bank);
+        branch.setInstitute(institute);
         branch.setAddress(address);
         branch.setBicCode(generatedBicCode);
         Branch savedBranch = branchRepository.save(branch);
@@ -76,8 +80,8 @@ public class BranchServiceImpl implements BranchService {
         if (branchRepository.findByName(dto.getName()).isPresent()) {
             throw new BranchAlreadyExistsException(dto.getName());
         }
-        if (dto.getBankId() == null) {
-            throw new BusinessException("Bank ID is required when creating a branch", HttpStatus.BAD_REQUEST);
+        if (dto.getInstituteId() == null) {
+            throw new BusinessException("Institute ID is required when creating a branch", HttpStatus.BAD_REQUEST);
         }
         if (dto.getAddress() == null) {
             throw new BusinessException("Address is required when creating a branch", HttpStatus.BAD_REQUEST);
@@ -86,6 +90,7 @@ public class BranchServiceImpl implements BranchService {
 
     private Address createAndSaveAddress(AddressRequestDto dto) {
         Address address = addressMapper.toAddress(dto);
+        address.setAddressType(AddressType.BRANCH);
         return addressRepository.save(address);
     }
 
@@ -97,10 +102,10 @@ public class BranchServiceImpl implements BranchService {
 
     public void deleteBranch(Long id) {
         Branch branch = branchRepository.findById(id).orElseThrow(() -> new BranchNotFoundException(id));
-        Bank bank = branch.getBank();
-        if (bank != null) {
-            bank.getBranches().remove(branch);
-            bankRepository.save(bank);
+        Institute institute = branch.getInstitute();
+        if (institute != null) {
+            institute.getBranches().remove(branch);
+            instituteRepository.save(institute);
         }
         branchRepository.delete(branch);
     }

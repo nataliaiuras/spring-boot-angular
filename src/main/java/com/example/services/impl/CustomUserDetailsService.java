@@ -1,7 +1,7 @@
 package com.example.services.impl;
 
-import com.example.entities.User;
-import com.example.entities.UserPrincipal;
+import com.example.models.entities.User;
+import com.example.models.UserPrincipal;
 import com.example.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;

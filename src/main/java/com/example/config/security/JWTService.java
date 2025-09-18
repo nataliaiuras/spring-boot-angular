@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -69,6 +70,10 @@ public class JWTService {
     }
 
     public String extractUserName(String token) {
+        if (!StringUtils.hasText(token)) {
+            log.warn("Token is null or empty");
+            return null;
+        }
         try {
             String username = extractClaim(token, Claims::getSubject);
             log.info("Extracted username from token: {}", username);
@@ -82,6 +87,10 @@ public class JWTService {
     }
 
     public String extractRole(String token) {
+        if (!StringUtils.hasText(token)) {
+            log.warn("Token is null or empty");
+            return null;
+        }
         return extractClaim(token, claims -> claims.get("role", String.class));
     }
 

@@ -1,13 +1,13 @@
 package com.example.services.impl;
 
-import com.example.dtos.card.CardDto;
-import com.example.dtos.account.AccountOverviewDto;
-import com.example.dtos.card.CardOverviewDto;
-import com.example.entities.Account;
-import com.example.entities.Card;
+import com.example.models.dtos.card.CardDto;
+import com.example.models.dtos.account.AccountOverviewDto;
+import com.example.models.dtos.card.CardOverviewDto;
+import com.example.models.entities.Account;
+import com.example.models.entities.Card;
 import com.example.exceptions.domain.card.CardNotFoundException;
-import com.example.mapers.AccountMapper;
-import com.example.mapers.CardMapper;
+import com.example.utils.mapers.AccountMapper;
+import com.example.utils.mapers.CardMapper;
 import com.example.repository.CardRepository;
 import com.example.services.CardService;
 import jakarta.transaction.Transactional;

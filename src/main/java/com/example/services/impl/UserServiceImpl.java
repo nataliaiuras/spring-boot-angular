@@ -1,21 +1,24 @@
 package com.example.services.impl;
 
 import com.example.config.security.JWTService;
-import com.example.dtos.user.UserDto;
-import com.example.dtos.user.PasswordUpdateDto;
-import com.example.dtos.user.RoleUpdateDto;
-import com.example.dtos.user.UserRequestDto;
-import com.example.exceptions.response.ApiResponse;
-import com.example.entities.User;
 import com.example.exceptions.domain.user.InvalidCredentialsException;
 import com.example.exceptions.domain.user.UserAlreadyExistsException;
 import com.example.exceptions.domain.user.UserNotFoundException;
+import com.example.exceptions.response.ApiResponse;
+import com.example.models.dtos.user.PasswordUpdateDto;
+import com.example.models.dtos.user.RoleUpdateDto;
+import com.example.models.dtos.user.UserDto;
+import com.example.models.dtos.user.UserRequestDto;
+import com.example.models.entities.User;
 import com.example.repository.UserRepository;
 import com.example.services.UserService;
-import com.example.utils.Role;
+import com.example.utils.enums.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,8 +35,6 @@ import org.springframework.stereotype.Service;
 import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -66,14 +67,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return mapToUserDto(user);
     }
 
-    public Set<UserDto> getAllUsers() throws AccessDeniedException {
+    public Page<UserDto> getAllUsers(Pageable pageable) throws AccessDeniedException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUserRole = extractUserRole(auth);
 
-        List<User> users = getUsersByRole(currentUserRole);
-        return users.stream()
+        Page<User> users = getUsersByRole(currentUserRole, pageable);
+
+        List<UserDto> userDtos = users.getContent()
+                .stream()
                 .map(this::mapToUserDto)
-                .collect(Collectors.toSet());
+                .toList();
+        return new PageImpl<>(userDtos, pageable, users.getTotalElements());
     }
 
 
@@ -168,6 +172,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .id(user.getId())
                 .username(user.getUsername())
                 .role(user.getRole())
+                .enabled(user.isEnabled())
+                .createdDate(user.getCreatedDate())
+                .lastModifiedDate(user.getLastModifiedDate())
+                .version(user.getVersion())
                 .build();
     }
 
@@ -175,10 +183,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return auth.getAuthorities().iterator().next().getAuthority();
     }
 
-    private List<User> getUsersByRole(String currentUserRole) throws AccessDeniedException {
+    private Page<User> getUsersByRole(String currentUserRole, Pageable pageable) throws AccessDeniedException {
         return switch (currentUserRole) {
-            case "ROLE_ADMIN" -> userRepository.findAll();
-            case "ROLE_MANAGER" -> userRepository.findByRoleNot(Role.ADMIN);
+            case "ROLE_ADMIN" -> userRepository.findAll(pageable);
+            case "ROLE_MANAGER" -> userRepository.findByRoleNot(Role.ADMIN, pageable);
             default -> throw new AccessDeniedException("Insufficient privileges");
         };
     }

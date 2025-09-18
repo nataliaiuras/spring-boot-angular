@@ -14,16 +14,18 @@ export interface UserProfile {
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:8080';
+  private readonly baseUrl = 'http://localhost:8080';
   isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  private userProfileSubject = new BehaviorSubject<UserProfile | null>(null);
+  private readonly userProfileSubject = new BehaviorSubject<UserProfile | null>(null);
   userProfile$ = this.userProfileSubject.asObservable();
 
-  constructor(private http: HttpClient,
-              private router: Router
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router
   ) {
     this.isAuthenticatedSubject.next(!!sessionStorage.getItem('token'));
     if (sessionStorage.getItem('token')) {
+      console.log("Token found, fetching user profile", )
       this.getUserProfile();
     }
   }
@@ -52,9 +54,12 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return sessionStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
+    if (!token || token === 'null' || token.trim() === '') {
+      return null;
+    }
+    return token;
   }
-
 
   logout(): void {
     sessionStorage.removeItem('token');
@@ -83,4 +88,16 @@ export class AuthService {
       });
     }
   }
+  setToken(token: string): void {
+    sessionStorage.setItem('token', token);
+  }
+
+  removeToken(): void {
+    sessionStorage.removeItem('token');
+  }
+
+  isLoggedIn(): boolean {
+    return this.getToken() !== null;
+  }
+
 }

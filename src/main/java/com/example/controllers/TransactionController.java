@@ -1,9 +1,8 @@
 package com.example.controllers;
 
 
-import com.example.dtos.transaction.TransactionOverviewDto;
+import com.example.models.dtos.transaction.*;
 import com.example.exceptions.response.ApiResponse;
-import com.example.dtos.transaction.*;
 import com.example.services.TransactionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -16,8 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -83,15 +84,15 @@ public class TransactionController {
 
     @PostMapping("/transfer")
     public ResponseEntity<ApiResponse<TransferResponseDto>> transferMoney(@Valid @RequestBody TransferRequestDto transferRequest) {
-//        TransactionDto transaction = transactionService.transferMoney(transferRequest);
-//        URI location = ServletUriComponentsBuilder
-//                .fromCurrentRequest()
-//                .path("/{id}")
-//                .buildAndExpand(transaction.getId())
-//                .toUri();
-//        return ResponseEntity
-//                .created(location)
-//                .body(ApiResponse.success(transaction, "Transfer completed successfully"));
+       /* TransactionDto transaction = transactionService.transferMoney(transferRequest);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(transaction.getId())
+                .toUri();
+        return ResponseEntity
+                .created(location)
+                .body(ApiResponse.success(transaction, "Transfer completed successfully"));*/
         TransferResponseDto response = transactionService.processTransfer(transferRequest);
         return ResponseEntity.ok(ApiResponse.success(response, "Transfer initiated successfully"));
 

@@ -1,11 +1,11 @@
 package com.example.controllers;
 
-import com.example.dtos.account.AccountDto;
-import com.example.dtos.account.AccountBalanceDto;
-import com.example.dtos.account.AccountOverviewDto;
-import com.example.dtos.account.AccountRequestDto;
-import com.example.dtos.card.CardOverviewDto;
-import com.example.dtos.customer.CustomerOverviewDto;
+import com.example.models.dtos.account.AccountDto;
+import com.example.models.dtos.account.AccountBalanceDto;
+import com.example.models.dtos.account.AccountOverviewDto;
+import com.example.models.dtos.account.AccountRequestDto;
+import com.example.models.dtos.card.CardOverviewDto;
+import com.example.models.dtos.customer.CustomerOverviewDto;
 import com.example.exceptions.response.ApiResponse;
 import com.example.services.AccountService;
 import jakarta.validation.Valid;

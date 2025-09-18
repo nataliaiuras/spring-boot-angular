@@ -1,13 +1,15 @@
 package com.example.services;
 
-import com.example.dtos.user.UserDto;
-import com.example.dtos.user.PasswordUpdateDto;
-import com.example.dtos.user.RoleUpdateDto;
-import com.example.dtos.user.UserRequestDto;
+import com.example.models.dtos.user.UserDto;
+import com.example.models.dtos.user.PasswordUpdateDto;
+import com.example.models.dtos.user.RoleUpdateDto;
+import com.example.models.dtos.user.UserRequestDto;
 import com.example.exceptions.response.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.nio.file.AccessDeniedException;
@@ -20,7 +22,7 @@ public interface UserService {
 
     UserDto profile(String name);
 
-    Set<UserDto> getAllUsers() throws AccessDeniedException;
+    Page<UserDto> getAllUsers(Pageable pageable) throws AccessDeniedException;
 
     UserDto getUserById(Long id);
 

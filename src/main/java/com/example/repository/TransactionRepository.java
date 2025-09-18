@@ -1,6 +1,6 @@
 package com.example.repository;
 
-import com.example.entities.Transaction;
+import com.example.models.entities.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

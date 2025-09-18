@@ -39,27 +39,33 @@ public class JwtFilter extends OncePerRequestFilter {
 
         log.info("Auth header: {}", authHeader);
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            log.info("Extracted token: {}...", token.substring(0, Math.min(50, token.length())));
+        if (authHeader != null && authHeader.startsWith("Bearer ") && authHeader.length() > 7) {
+            token = authHeader.substring(7).trim();
+            if (!token.isEmpty() && isValidJwtFormat(token)) {
 
-            try {
-                username = jwtService.extractUserName(token);
-                log.info("Extracted username: {}", username);
-            } catch (io.jsonwebtoken.MalformedJwtException e) {
-                log.warn("Malformed JWT token: {}", e.getMessage());
-            } catch (io.jsonwebtoken.ExpiredJwtException e) {
-                log.warn("Expired JWT token: {}", e.getMessage());
-            } catch (io.jsonwebtoken.UnsupportedJwtException e) {
-                log.warn("Unsupported JWT token: {}", e.getMessage());
-            } catch (io.jsonwebtoken.security.SignatureException e) {
-                log.warn("Invalid JWT signature: {}", e.getMessage());
-            } catch (IllegalArgumentException e) {
-                log.warn("JWT token compact of handler are invalid: {}", e.getMessage());
-            } catch (Exception e) {
-                log.warn("Invalid JWT token: {}", e.getMessage());
+                log.info("Extracted token: {}...", token.substring(0, Math.min(50, token.length())));
+
+                try {
+                    username = jwtService.extractUserName(token);
+                    log.info("Extracted username: {}", username);
+                } catch (io.jsonwebtoken.MalformedJwtException e) {
+                    log.warn("Malformed JWT token: {}", e.getMessage());
+                } catch (io.jsonwebtoken.ExpiredJwtException e) {
+                    log.warn("Expired JWT token: {}", e.getMessage());
+                } catch (io.jsonwebtoken.UnsupportedJwtException e) {
+                    log.warn("Unsupported JWT token: {}", e.getMessage());
+                } catch (io.jsonwebtoken.security.SignatureException e) {
+                    log.warn("Invalid JWT signature: {}", e.getMessage());
+                } catch (IllegalArgumentException e) {
+                    log.warn("JWT token compact of handler are invalid: {}", e.getMessage());
+                } catch (Exception e) {
+                    log.warn("Invalid JWT token: {}", e.getMessage());
+                }
+            } else {
+                log.warn("Token is empty or has invalid JWT format. Token: '{}'", token);
             }
-
+        } else {
+            log.debug("No valid Authorization header found");
 
         }
 
@@ -89,5 +95,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
+    private boolean isValidJwtFormat(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return false;
+        }
+
+        long periodCount = token.chars().filter(ch -> ch == '.').count();
+        return periodCount == 2;
+    }
+
 
 }

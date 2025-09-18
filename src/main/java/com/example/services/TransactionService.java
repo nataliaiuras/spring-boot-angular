@@ -1,7 +1,6 @@
 package com.example.services;
 
-import com.example.dtos.transaction.TransactionOverviewDto;
-import com.example.dtos.transaction.*;
+import com.example.models.dtos.transaction.*;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
