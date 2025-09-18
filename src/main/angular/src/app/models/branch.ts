@@ -1,10 +1,16 @@
+import {Institute} from './institute';
+import {Address} from './address';
+import {Client} from './client';
+
 export interface Branch {
   id: number;
-  name: string;
+  branchCode: string;
+  locationCode: string;
   bicCode: string;
-  swiftCode: string;
-  telephoneNumber: string;
+  name: string;
   email: string;
-  address: string;
-  clients: null;
+  phoneNumber: string;
+  address: Address;
+  institute: Institute;
+  clients: Client[];
 }

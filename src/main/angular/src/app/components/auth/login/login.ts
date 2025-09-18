@@ -47,17 +47,65 @@ export class Login implements OnInit{
     localStorage.removeItem('token');
   }
 
-  login(): void {
+  // login(): void {
+  //   this.authService.login(this.credentials).subscribe({
+  //     next: (response) => {
+  //       // const returnUrl = this.route.snapshot.queryParams['returnUrl'] || 'api/banks';
+  //       // this.router.navigate([returnUrl]);
+  //       this.router.navigate(['/api/vehicles'])
+  //     },
+  //     error: (error) => {
+  //       console.error('Login error:', error);
+  //       this.message = 'Invalid username or password';
+  //     }
+  //   });
+  // }
+
+
+/*  login() {
     this.authService.login(this.credentials).subscribe({
       next: (response) => {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || 'api/posts';
-        this.router.navigate([returnUrl]);
+        if (response.token) {
+          sessionStorage.setItem('token', response.token);
+          this.authService.setToken(response.token);
+        }
+        this.router.navigate(['/api/banks'])
+      },
+      error: (error) => {
+        this.message = 'Login failed';
+      }
+    });
+  }*/
+
+  login() {
+    this.authService.login(this.credentials).subscribe({
+      next: (response) => {
+        console.log('Login response:', response); // Debug log
+
+        // Access the nested token: response.data.token instead of response.token
+        if (response.data && response.data.token) {
+          console.log('Token received:', response.data.token);
+          sessionStorage.setItem('token', response.data.token);
+          this.authService.setToken(response.data.token);
+
+          console.log('Token stored:', sessionStorage.getItem('token'));
+        } else {
+          console.log('No token found in response data!');
+        }
+        this.router.navigate(['/api/dashboard'])
       },
       error: (error) => {
         console.error('Login error:', error);
-        this.message = 'Invalid username or password';
+        this.message = 'Login failed';
       }
     });
   }
+
+
+
+
+
+
+
 
 }

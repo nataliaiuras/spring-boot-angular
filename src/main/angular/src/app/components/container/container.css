@@ -1,3 +1,4 @@
+/* Banking Application Container Styles */
 .example-container {
   display: flex;
   flex-direction: column;
@@ -6,7 +7,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-
 }
 
 .example-is-mobile .example-toolbar {
@@ -14,12 +14,10 @@
   position: fixed;
   /* Make sure the toolbar will stay on top of the content as it scrolls past. */
   z-index: 2;
- /* background-color:var(--mat-button-tonal-container-color, var(--mat-sys-secondary-container));*/
 }
 
 h1.example-app-name {
   width: 100%;
-
 }
 
 .example-sidenav-container {
@@ -33,20 +31,19 @@ h1.example-app-name {
      `<body>` to be our scrolling element for mobile layouts. */
   flex: 1 0 auto;
 }
+
 p-menubar {
- /* background-color: var(--mat-table-background-color, var(--mat-sys-surface));
-  color: black;
-  border: 0;*/
   margin-top: 0;
 }
 
 .example-toolbar {
-  background-color: darkcyan;
-  color: white;
+  background-color: #366da5; /* Deep blue - professional banking color */
+  color: #ffffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
 }
 
 .toolbar-left {
@@ -69,35 +66,134 @@ p-menubar {
   object-fit: contain;
 }
 
+/* User menu styling - more professional look */
 .user-menu-button {
   display: flex;
   align-items: center;
   gap: 8px;
   color: white;
+  background-color: #366da5;
+  border-radius: 4px;
+  padding: 4px 12px;
+  transition: background-color 0.2s ease;
+}
+
+.user-menu-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .user-menu-header {
-  padding: 8px 16px;
-  font-size: 16px;
+  padding: 12px 16px 4px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #003366; /* Match toolbar color */
 }
 
 .user-menu-role {
-  padding: 0 16px 8px;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 14px;
+  padding: 0 16px 12px;
+  color: #666;
+  font-size: 10px;
+  border-bottom: 1px solid #eee;
 }
 
+/* Override Material button styles in toolbar */
 .mat-toolbar .mat-mdc-button-base.mat-mdc-button-base.mat-unthemed {
   --mat-button-text-label-text-color: var(--mat-toolbar-container-text-color, var(--mat-sys-on-surface));
   --mat-button-outlined-label-text-color: var(--mat-toolbar-container-text-color, var(--mat-sys-on-surface));
 }
 
+/* Sidenav styling for banking app */
+mat-sidenav {
+  width: 250px;
+  background-color: #f5f7fa; /* Light gray background */
+  border-right: 1px solid #e0e0e0;
+}
+
+mat-nav-list a.mat-list-item {
+  color: #333;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+mat-nav-list a.mat-list-item:hover {
+  background-color: #e6eef7; /* Light blue on hover */
+  border-left-color: #003366; /* Match toolbar color */
+}
+
+mat-nav-list a.mat-list-item.active {
+  background-color: #e6eef7;
+  border-left-color: #003366;
+  color: #003366;
+  font-weight: 500;
+}
 
 
- .material-symbols-outlined {
-   font-variation-settings:
-     'FILL' 0,
-     'wght' 400,
-     'GRAD' 0,
-     'opsz' 24
- }
+/* Material icons styling */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+}
+
+/* Content area styling for banking app */
+mat-sidenav-content {
+  background-color: #f9fafc;
+  padding: 20px;
+}
+
+/* Card styling for banking app components */
+mat-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  border: 1px solid #eaeaea;
+}
+
+mat-card-header {
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 12px;
+}
+
+mat-card-title {
+  color: #003366;
+  font-weight: 500;
+}
+
+/* Table styling for banking data */
+table.mat-table {
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+}
+
+th.mat-header-cell {
+  background-color: #f5f7fa;
+  color: #003366;
+  font-weight: 500;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+/* Button styling */
+button.mat-raised-button.mat-primary {
+  background-color: #003366;
+}
+
+button.mat-stroked-button.mat-primary {
+  color: #003366;
+  border-color: #003366;
+}
+
+/* Financial data highlighting */
+.positive-amount {
+  color: #2e7d32; /* Green for positive values */
+  font-weight: 500;
+}
+
+.negative-amount {
+  color: #c62828; /* Red for negative values */
+  font-weight: 500;
+}

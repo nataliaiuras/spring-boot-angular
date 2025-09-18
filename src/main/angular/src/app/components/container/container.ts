@@ -10,14 +10,30 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatDivider} from '@angular/material/divider';
 import {AuthService, UserProfile} from '../../services/auth/auth';
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-import {NgOptimizedImage} from '@angular/common';
 import {MatSidenav, MatSidenavContainer, MatSidenavModule} from '@angular/material/sidenav';
+import {UserService} from '../../services/user/user-service';
 
 @Component({
   selector: 'app-container',
   templateUrl: 'container.html',
   styleUrl: 'container.css',
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, MatSidenavModule, MatListModule, MegaMenuModule, RouterLink, RouterLinkActive, RouterOutlet, MatMenuTrigger, MatMenu, NgOptimizedImage, MatDivider, MatMenuItem, MatSidenav, MatSidenavContainer],
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule,
+    MegaMenuModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    MatMenuTrigger,
+    MatMenu,
+    MatDivider,
+    MatMenuItem,
+    MatSidenav,
+    MatSidenavContainer
+  ],
   standalone: true,
 })
 export class Container implements OnDestroy, OnInit {
@@ -33,13 +49,18 @@ export class Container implements OnDestroy, OnInit {
   logoAlt = 'logo';
 
   // User profile information
+  currentUser: User | null = null;
   userProfile: UserProfile | null = null;
   username: string = '';
   userRole: string = '';
   email: string = '';
 
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly userService: UserService
+  ) {
     const media = inject(MediaMatcher);
 
     this._mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -63,11 +84,25 @@ export class Container implements OnDestroy, OnInit {
   items: MegaMenuItem[] | undefined;
 
   ngOnInit() {
-    this.authService.userProfile$.subscribe(profile => {
+  /*  this.authService.userProfile$.subscribe(profile => {
       if (profile) {
         this.username = profile.username;
         this.email = profile.email;
         this.userRole = profile.role;
+      }
+    });*/
+
+    // Load current user
+    this.userService.getCurrentUser();
+
+    // Subscribe to user changes
+    this.userService.currentUser$.subscribe({
+      next: (user) => {
+        console.log('User data received in profile:', user);
+        this.currentUser = user;
+      },
+      error: (error) => {
+        console.error('Error in profile component:', error);
       }
     });
 

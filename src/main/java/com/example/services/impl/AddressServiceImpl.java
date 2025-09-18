@@ -1,11 +1,11 @@
 package com.example.services.impl;
 
-import com.example.dtos.address.AddressDto;
-import com.example.dtos.address.AddressOverviewDto;
-import com.example.dtos.address.AddressRequestDto;
-import com.example.entities.Address;
+import com.example.models.dtos.address.AddressDto;
+import com.example.models.dtos.address.AddressOverviewDto;
+import com.example.models.dtos.address.AddressRequestDto;
+import com.example.models.entities.Address;
 import com.example.exceptions.domain.address.AddressNotFoundException;
-import com.example.mapers.AddressMapper;
+import com.example.utils.mapers.AddressMapper;
 import com.example.repository.AddressRepository;
 import com.example.services.AddressService;
 import jakarta.transaction.Transactional;

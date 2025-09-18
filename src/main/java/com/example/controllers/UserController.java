@@ -1,13 +1,20 @@
 package com.example.controllers;
 
-import com.example.dtos.user.UserDto;
-import com.example.dtos.user.PasswordUpdateDto;
-import com.example.dtos.user.RoleUpdateDto;
-import com.example.dtos.user.UserRequestDto;
+import com.example.models.dtos.branch.BranchOverviewDto;
+import com.example.models.dtos.user.UserDto;
+import com.example.models.dtos.user.PasswordUpdateDto;
+import com.example.models.dtos.user.RoleUpdateDto;
+import com.example.models.dtos.user.UserRequestDto;
 import com.example.exceptions.response.ApiResponse;
 import com.example.services.UserService;
 import com.example.services.impl.UserServiceImpl;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -63,19 +70,26 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(userDto));
     }
 
-    @GetMapping
+    @GetMapping("users")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
-    public ResponseEntity<ApiResponse<Set<UserDto>>> getAllUsers() throws AccessDeniedException {
-        return ResponseEntity.ok(ApiResponse.success(userService.getAllUsers()));
+    public ResponseEntity<ApiResponse<Page<UserDto>>> getAllUsers(
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) throws AccessDeniedException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        Page<UserDto> pagedUsers = userService.getAllUsers(pageable);
+        return ResponseEntity.ok(ApiResponse.success(pagedUsers));
     }
 
-    @GetMapping("{id}")
-    @PreAuthorize("@securityService.canViewUser(#id)")
+    @GetMapping("users/{id}")
+   // @PreAuthorize("@securityService.canViewUser(#id)")
     public ResponseEntity<ApiResponse<UserDto>> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(userService.getUserById(id)));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("users/{id}")
     @PreAuthorize("@securityService.canDeleteUser(#id)")
     public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
@@ -83,13 +97,13 @@ public class UserController {
     }
 
 
-    @PatchMapping("{id}/updatePassword")
+    @PatchMapping("users/{id}/updatePassword")
     @PreAuthorize("@securityService.isCurrentUserOrAdmin(#id)")
     public ResponseEntity<?> updatePassword(@PathVariable Long id, @Valid @RequestBody PasswordUpdateDto passwordDto) {
         return userService.updatePassword(id, passwordDto);
     }
 
-    @PatchMapping("{id}/updateRole")
+    @PatchMapping("users/{id}/updateRole")
     @PreAuthorize("@securityService.canUpdateUserRole(#id, #roleUpdateDto.role)")
     public ResponseEntity<ApiResponse<String>> updateRole(
             @PathVariable Long id,

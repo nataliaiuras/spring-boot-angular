@@ -1,8 +1,8 @@
 package com.example.services;
 
-import com.example.dtos.address.AddressDto;
-import com.example.dtos.address.AddressOverviewDto;
-import com.example.dtos.address.AddressRequestDto;
+import com.example.models.dtos.address.AddressDto;
+import com.example.models.dtos.address.AddressOverviewDto;
+import com.example.models.dtos.address.AddressRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

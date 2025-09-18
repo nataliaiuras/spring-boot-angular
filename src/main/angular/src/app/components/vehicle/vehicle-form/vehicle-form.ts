@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogActions, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
@@ -17,7 +17,10 @@ import {Vehicle} from '../../../models/vehicle';
     MatLabel,
     MatInput,
     MatDialogActions,
-    MatButton, MatError, MatOption, MatSelect,
+    MatButton,
+    MatError,
+    MatOption,
+    MatSelect,
   ],
   styleUrls: ['./vehicle-form.css'],
   standalone: true,

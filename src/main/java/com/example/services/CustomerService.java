@@ -1,11 +1,11 @@
 package com.example.services;
 
-import com.example.dtos.customer.CustomerDto;
-import com.example.dtos.account.AccountOverviewDto;
-import com.example.dtos.branch.BranchOverviewDto;
-import com.example.dtos.customer.CustomerOverviewDto;
-import com.example.dtos.customer.CustomerRequestDto;
-import com.example.dtos.user.UserOverviewDto;
+import com.example.models.dtos.customer.CustomerDto;
+import com.example.models.dtos.account.AccountOverviewDto;
+import com.example.models.dtos.branch.BranchOverviewDto;
+import com.example.models.dtos.customer.CustomerOverviewDto;
+import com.example.models.dtos.customer.CustomerRequestDto;
+import com.example.models.dtos.user.UserOverviewDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

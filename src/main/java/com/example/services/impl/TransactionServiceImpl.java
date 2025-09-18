@@ -1,20 +1,22 @@
 package com.example.services.impl;
 
-import com.example.dtos.transaction.TransactionOverviewDto;
-import com.example.dtos.transaction.*;
-import com.example.entities.Account;
-import com.example.entities.Transaction;
 import com.example.exceptions.domain.account.AccountInactiveException;
 import com.example.exceptions.domain.account.AccountNotFoundException;
 import com.example.exceptions.domain.transaction.DailyTransferLimitExceededException;
 import com.example.exceptions.domain.transaction.InsufficientBalanceException;
 import com.example.exceptions.domain.transaction.TransactionNotFoundException;
-import com.example.mapers.TransactionMapper;
+import com.example.models.dtos.transaction.*;
+import com.example.models.entities.Account;
+import com.example.models.entities.Transaction;
 import com.example.repository.AccountRepository;
 import com.example.repository.TransactionRepository;
 import com.example.services.TransactionService;
-import com.example.utils.TransactionStatus;
-import com.example.utils.TransactionType;
+import com.example.utils.constants.AppConstants;
+import com.example.utils.enums.TransactionStatus;
+import com.example.utils.enums.TransactionType;
+import com.example.utils.mapers.AccountMapper;
+import com.example.utils.mapers.CustomerMapper;
+import com.example.utils.mapers.TransactionMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -37,6 +40,8 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapper transactionMapper;
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
+    private final CustomerMapper customerMapper;
 
 
     @Override
@@ -59,7 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (startDate != null) {
             startDateInstant = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         }
-        if (endDate != null && startDate != null && startDate.isAfter(endDate) ) {
+        if (endDate != null && startDate != null && startDate.isAfter(endDate)) {
             endDateInstant = startDate.atTime(23, 59, 59, 999_999_999)
                     .atZone(ZoneId.systemDefault())
                     .toInstant();
@@ -79,8 +84,8 @@ public class TransactionServiceImpl implements TransactionService {
         Account toAccount = accountRepository.findById(transferRequest.getDestinationIdentifier())
                 .orElseThrow(() -> new AccountNotFoundException(transferRequest.getDestinationIdentifier()));
         validateAccountsForTransfer(fromAccount, toAccount, transferRequest.getAmount());
-        fromAccount.setCurrentBalance(fromAccount.getCurrentBalance().subtract(transferRequest.getAmount()));
-        toAccount.setCurrentBalance(toAccount.getCurrentBalance().add(transferRequest.getAmount()));
+        fromAccount.setBalance(fromAccount.getBalance().subtract(transferRequest.getAmount()));
+        toAccount.setBalance(toAccount.getBalance().add(transferRequest.getAmount()));
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
         Transaction transaction = Transaction.builder()
@@ -98,6 +103,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionMapper.toTransactionDto(savedTransaction);
 
     }
+
     private void validateTransferRequest(TransferRequestDto transferRequest) {
         if (transferRequest == null) {
             throw new IllegalArgumentException("Transfer request cannot be null");
@@ -123,10 +129,10 @@ public class TransactionServiceImpl implements TransactionService {
         if (!toAccount.isActive()) {
             throw new AccountInactiveException(toAccount.getId());
         }
-        if (fromAccount.getCurrentBalance().compareTo(amount) < 0) {
+        if (fromAccount.getBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException(fromAccount.getId(), amount);
         }
-        BigDecimal dailyTransferLimit = fromAccount.getDailyTransferLimit();
+        BigDecimal dailyTransferLimit = AppConstants.DEFAULT_AMOUNT_DAILY_LIMIT;
         if (dailyTransferLimit != null) {
             BigDecimal todayTransfers = getTodayTransferAmount(fromAccount.getId());
             if (todayTransfers.add(amount).compareTo(dailyTransferLimit) > 0) {
@@ -145,18 +151,65 @@ public class TransactionServiceImpl implements TransactionService {
 
     private String generateReferenceNumber() {
         return "TXN" + System.currentTimeMillis() +
-                String.format("%04d", (int)(Math.random() * 10000));
+                String.format("%04d", (int) (Math.random() * 10000));
     }
+
 
 
     @Override
     public TransactionDto deposit(Long accountId, BigDecimal amount, String description) {
-        return null;
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+
+        account.setBalance(account.getBalance().add(amount));
+        accountRepository.save(account);
+
+        Transaction transaction = Transaction.builder()
+                .amount(amount)
+                .type(TransactionType.DEPOSIT)
+                .status(TransactionStatus.COMPLETED)
+                .transactionDate(Instant.now())
+                .fromCustomer(account.getCustomer())
+                .fromAccount(account)
+                .toCustomer(account.getCustomer()) // Use managed entity
+                .toAccount(account)
+                .referenceNumber(generateReferenceNumber())
+                .description(description)
+                .completedDate(Instant.now())
+                .build();
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return transactionMapper.toTransactionDto(savedTransaction);
     }
 
     @Override
     public TransactionDto withdraw(Long accountId, BigDecimal amount, String description) {
-        return null;
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+
+        if (!account.isActive() || account.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException(accountId, amount);
+        }
+
+        account.setBalance(account.getBalance().subtract(amount));
+        accountRepository.save(account);
+
+        Transaction transaction = Transaction.builder()
+                .amount(amount)
+                .type(TransactionType.WITHDRAWAL)
+                .status(TransactionStatus.COMPLETED)
+                .transactionDate(Instant.now())
+                .fromCustomer(account.getCustomer()) // Use managed entity
+                .fromAccount(account)
+                .toCustomer(account.getCustomer()) // Use managed entity
+                .toAccount(account)
+                .referenceNumber(generateReferenceNumber())
+                .description(description)
+                .completedDate(Instant.now())
+                .build();
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return transactionMapper.toTransactionDto(savedTransaction);
     }
 
     @Override
@@ -206,7 +259,32 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransferResponseDto processTransfer(TransferRequestDto transferRequest) {
-        return null;
+        validateTransferRequest(transferRequest);
+        Account fromAccount = accountRepository.findById(transferRequest.getFromAccountId())
+                .orElseThrow(() -> new AccountNotFoundException(transferRequest.getFromAccountId()));
+        Account toAccount = accountRepository.findById(transferRequest.getDestinationIdentifier())
+                .orElseThrow(() -> new AccountNotFoundException(transferRequest.getDestinationIdentifier()));
+        validateAccountsForTransfer(fromAccount, toAccount, transferRequest.getAmount());
+        fromAccount.setBalance(fromAccount.getBalance().subtract(transferRequest.getAmount()));
+        toAccount.setBalance(toAccount.getBalance().add(transferRequest.getAmount()));
+        accountRepository.save(fromAccount);
+        accountRepository.save(toAccount);
+        Transaction transaction = Transaction.builder()
+                .amount(transferRequest.getAmount())
+                .type(TransactionType.TRANSFER)
+                .status(TransactionStatus.COMPLETED)
+                .fromCustomer(fromAccount.getCustomer())
+                .fromAccount(fromAccount)
+                .toCustomer(toAccount.getCustomer())
+                .toAccount(toAccount)
+                .referenceNumber(generateReferenceNumber())
+                .description(transferRequest.getDescription())
+                .transactionDate(Instant.now())
+                .completedDate(Instant.now())
+                .build();
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return transactionMapper.toTransferResponseDto(savedTransaction);
     }
 
     public Set<TransactionDto> getAllTransactionsByAccountId(Long accountId) {
