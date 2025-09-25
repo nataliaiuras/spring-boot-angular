@@ -1,6 +1,7 @@
 package com.example.services;
 
 import com.example.models.dtos.transaction.*;
+import com.example.utils.enums.CurrencyType;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +18,9 @@ public interface TransactionService {
 
     Page<TransactionOverviewDto> getTransactionsByAccount(Long accountId, LocalDate startDate, LocalDate endDate, String type, String status, Pageable pageable);
 
-    TransactionDto transferMoney(TransferRequestDto transferRequest);
+    TransactionDto deposit(Long accountId, BigDecimal amount, String description, CurrencyType currencyType);
 
-    TransactionDto deposit(Long accountId, BigDecimal amount, String description);
-
-    TransactionDto withdraw(Long accountId, BigDecimal amount, String description);
+    TransactionDto withdraw(Long accountId, BigDecimal amount, String description, CurrencyType currencyType);
 
     TransactionDto cancelTransaction(Long id);
 

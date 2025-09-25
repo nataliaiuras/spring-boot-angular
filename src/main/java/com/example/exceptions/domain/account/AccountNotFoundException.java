@@ -8,4 +8,8 @@ public class AccountNotFoundException extends DomainEntityException {
         super("Account", accountId.toString(), "not found");
     }
 
+    public AccountNotFoundException(String accountIdentifier) {
+        super("Account", accountIdentifier, "not found");
+    }
+
 }

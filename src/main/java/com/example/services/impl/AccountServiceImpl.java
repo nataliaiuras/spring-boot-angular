@@ -16,7 +16,6 @@ import com.example.utils.mapers.CardMapper;
 import com.example.utils.mapers.CustomerMapper;
 import com.example.repository.AccountRepository;
 import com.example.services.AccountService;
-import com.example.utils.constants.AppConstants;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -71,51 +70,56 @@ public class AccountServiceImpl implements AccountService {
         return String.format("%012d", nextVal.longValue());
     }
 
+    public Account findAccountById(Long id) {
+        return accountRepository.findById(id)
+                        .orElseThrow(() -> new AccountNotFoundException(id));
+    }
 
     public AccountOverviewDto getAccountById(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        Account account = findAccountById(id);
         return accountMapper.toAccountOverviewDto(account);
     }
 
     public AccountDto updateAccount(Long id, AccountRequestDto dto) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        Account account = findAccountById(id);
         accountMapper.updateAccount(account, accountMapper.toAccount(dto));
-        return accountMapper.toAccountDto(accountRepository.save(account));
+        Account saved = accountRepository.save(account);
+        return accountMapper.toAccountDto(saved);
     }
 
     public void deleteAccount(Long id) {
-        accountRepository.delete(accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id)));
+        accountRepository.delete(findAccountById(id));
     }
 
     @Override
     public CardOverviewDto getCardByAccountId(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        Account account = findAccountById(id);
         Card card = account.getCard();
         return cardMapper.toCardOverviewDto(card);
     }
 
     @Override
     public CustomerOverviewDto getCustomerByAccountId(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        Account account = findAccountById(id);
         Customer customer = account.getCustomer();
         return customerMapper.toOverviewDto(customer);
     }
 
     @Override
     public AccountBalanceDto getAccountBalance(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        Account account = findAccountById(id);
         return accountMapper.toAccountBalanceDto(account);
     }
 
     @Override
     public BigDecimal getAvailableBalance(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        Account account = findAccountById(id);
         return account.getBalance();
     }
 
     @Override
     public boolean canWithdraw(Long id, BigDecimal amount) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        Account account = findAccountById(id);
         BigDecimal availableBalance = account.getBalance();
         return availableBalance.compareTo(amount) >= 0;
     }

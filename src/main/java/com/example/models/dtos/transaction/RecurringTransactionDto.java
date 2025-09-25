@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class RecurringTransactionDto {
     private Long id;
-    private Long fromAccountId;
-    private Long toAccountId;
+    private Long sourceAccountId;
+    private Long destinationAccountId;
     private BigDecimal amount;
     private String description;
     private String frequency; // DAILY, WEEKLY, MONTHLY, YEARLY

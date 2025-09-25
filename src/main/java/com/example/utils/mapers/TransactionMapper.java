@@ -14,8 +14,6 @@ import java.util.Set;
 public interface TransactionMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "version", ignore = true)
-    @Mapping(target = "lastModifiedDate", ignore = true)
     Transaction toTransaction(TransactionDto transactionDto);
 
     TransactionDto toTransactionDto(Transaction transaction);

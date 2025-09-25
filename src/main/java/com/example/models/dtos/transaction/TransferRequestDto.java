@@ -1,8 +1,8 @@
 package com.example.models.dtos.transaction;
 
 import com.example.utils.enums.CurrencyType;
-import com.example.utils.enums.DestinationIdentifierType;
-import com.example.utils.enums.TransferType;
+import com.example.utils.enums.OperationType;
+import com.example.utils.enums.RecipientIdentifierType;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,31 +16,39 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TransferRequestDto {
     @NotNull(message = "Source account ID is required")
-    private Long fromAccountId;
+    private Long sourceAccountId;
 
-    @NotNull(message = "Destination type is required")
-    private DestinationIdentifierType destinationIdentifierType;
+    @NotNull(message = "Operation type is required")
+    private OperationType operationType;
 
-    @NotNull(message = "Destination is required")
-    private Long destinationIdentifier; // account number, IBAN, card number, etc.
+    @NotNull(message = "Recipient identifier type is required")
+    private RecipientIdentifierType recipientIdentifierType;
 
-    @NotNull(message = "Transfer type is required")
-    private TransferType transferType;
+    @NotNull(message = "Recipient identifier is required")
+    private String recipientIdentifier;
+
+    @NotNull(message = "Bic code is required")
+    private String bicCode;
 
     @NotNull(message = "Amount is required")
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
 
-    @NotNull(message = "Currency is required")
-    private CurrencyType currency;
+   /* @NotNull(message = "Amount currency specification is required")
+    private CurrencyType amountCurrency;
 
+    @NotNull(message = "Source currency is required")
+    private CurrencyType sourceCurrency;
+
+    @NotNull(message = "Destination currency is required")
+    private CurrencyType destinationCurrency;*/
+
+    @NotNull(message = "Description is required")
     private String description;
 
-    private String beneficiaryName;
-    private String beneficiaryAddress;
-    private String beneficiaryBank;
-    private String bankCode;
-    private String bicCode;
+    private String recipientFirstName;
+    private String recipientLastName;
+
 
 }
 
