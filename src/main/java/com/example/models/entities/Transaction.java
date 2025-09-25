@@ -1,12 +1,16 @@
 package com.example.models.entities;
 
+import com.example.utils.enums.CurrencyType;
+import com.example.utils.enums.OperationType;
 import com.example.utils.enums.TransactionStatus;
-import com.example.utils.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,7 +22,10 @@ import java.time.Instant;
 
 
 @Entity
-@Table(name = "TRANSACTIONS", indexes = {@Index(name = "idx_transaction_date", columnList = "transaction_date"), @Index(name = "idx_transaction_status", columnList = "status"), @Index(name = "idx_transaction_from_account", columnList = "from_account_id"), @Index(name = "idx_transaction_to_account", columnList = "to_account_id")})
+@Table(name = "TRANSACTIONS", indexes = {@Index(name = "idx_transaction_date", columnList = "transaction_date"),
+        @Index(name = "idx_transaction_status", columnList = "status"), @Index(name = "idx_transaction_source_account",
+        columnList = "source_account_id"), @Index(name = "idx_transaction_destination_account",
+        columnList = "destination_account_id")})
 @Getter
 @Builder
 @NoArgsConstructor
@@ -32,15 +39,56 @@ public class Transaction implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, precision = 19, scale = 4)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "operation_type", nullable = false, length = 100)
+    @NotNull
+    private OperationType operationType;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "source_account_id")
+    private Account sourceAccount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_account_id")
+    private Account destinationAccount;
+
+    @Column(name = "source_amount", nullable = false, precision = 19, scale = 4)
     @NotNull
     @Positive
-    private BigDecimal amount;
+    private BigDecimal sourceAmount;
 
+    @Column(name = "source_currency", length = 3)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    private CurrencyType sourceCurrency;
+
+    @Column(name = "destination_currency", length = 3)
+    @Enumerated(EnumType.STRING)
+    private CurrencyType destinationCurrency;
+
+    @Column(name = "conversion_rate", precision = 19, scale = 8)
+    private BigDecimal conversionRate;
+
+    @Column(name = "conversion_fee", precision = 19, scale = 4)
+    private BigDecimal conversionFee;
+
+    @Column(name = "converted_amount", precision = 19, scale = 4)
+    private BigDecimal convertedAmount;
+
+    @Column(name = "operation_fee", precision = 19, scale = 4)
+    private BigDecimal operationFee;
+
+    @Column(name = "destination_amount", nullable = false, precision = 19, scale = 4)
     @NotNull
-    private TransactionType type;
+    @Positive
+    private BigDecimal destinationAmount;
+
+    @Column(name = "reference_number", length = 50)
+    @Size(max = 50)
+    private String referenceNumber;
+
+    @Column(name = "description", length = 255)
+    @Size(max = 255)
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -51,35 +99,6 @@ public class Transaction implements Serializable {
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Instant transactionDate;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "from_customer_id", nullable = false)
-    @NotNull
-    private Customer fromCustomer;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "from_account_id", nullable = false)
-    @NotNull
-    private Account fromAccount;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_customer_id")
-    private Customer toCustomer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_account_id")
-    private Account toAccount;
-
-    @Column(name = "reference_number", length = 50)
-    @Size(max = 50)
-    private String referenceNumber;
-
-    @Column(name = "description", length = 255)
-    @Size(max = 255)
-    private String description;
-
-    @Column(name = "completed_date")
-    private Instant completedDate;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

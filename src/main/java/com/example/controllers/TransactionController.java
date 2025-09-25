@@ -1,9 +1,10 @@
 package com.example.controllers;
 
 
-import com.example.models.dtos.transaction.*;
 import com.example.exceptions.response.ApiResponse;
+import com.example.models.dtos.transaction.*;
 import com.example.services.TransactionService;
+import com.example.utils.enums.CurrencyType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,10 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -83,28 +82,19 @@ public class TransactionController {
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<ApiResponse<TransferResponseDto>> transferMoney(@Valid @RequestBody TransferRequestDto transferRequest) {
-       /* TransactionDto transaction = transactionService.transferMoney(transferRequest);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(transaction.getId())
-                .toUri();
-        return ResponseEntity
-                .created(location)
-                .body(ApiResponse.success(transaction, "Transfer completed successfully"));*/
+    public ResponseEntity<ApiResponse<TransferResponseDto>> transfer(@Valid @RequestBody TransferRequestDto transferRequest) {
         TransferResponseDto response = transactionService.processTransfer(transferRequest);
         return ResponseEntity.ok(ApiResponse.success(response, "Transfer initiated successfully"));
-
     }
 
     @PostMapping("/deposit")
     public ResponseEntity<ApiResponse<TransactionDto>> deposit(
             @RequestParam Long accountId,
             @RequestParam BigDecimal amount,
+            @RequestParam CurrencyType currencyType,
             @RequestParam(required = false) String description) {
 
-        TransactionDto transaction = transactionService.deposit(accountId, amount, description);
+        TransactionDto transaction = transactionService.deposit(accountId, amount, description, currencyType);
         return ResponseEntity.ok(ApiResponse.success(transaction, "Deposit completed successfully"));
     }
 
@@ -112,9 +102,10 @@ public class TransactionController {
     public ResponseEntity<ApiResponse<TransactionDto>> withdraw(
             @RequestParam Long accountId,
             @RequestParam BigDecimal amount,
+            @RequestParam CurrencyType currencyType,
             @RequestParam(required = false) String description) {
 
-        TransactionDto transaction = transactionService.withdraw(accountId, amount, description);
+        TransactionDto transaction = transactionService.withdraw(accountId, amount, description, currencyType);
         return ResponseEntity.ok(ApiResponse.success(transaction, "Withdrawal completed successfully"));
     }
 
