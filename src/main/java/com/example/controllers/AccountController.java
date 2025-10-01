@@ -1,12 +1,12 @@
 package com.example.controllers;
 
-import com.example.models.dtos.account.AccountDto;
+import com.example.exceptions.response.ApiResponse;
 import com.example.models.dtos.account.AccountBalanceDto;
+import com.example.models.dtos.account.AccountDto;
 import com.example.models.dtos.account.AccountOverviewDto;
 import com.example.models.dtos.account.AccountRequestDto;
 import com.example.models.dtos.card.CardOverviewDto;
 import com.example.models.dtos.customer.CustomerOverviewDto;
-import com.example.exceptions.response.ApiResponse;
 import com.example.services.AccountService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -75,9 +76,9 @@ public class AccountController {
     }
 
     @GetMapping("{id}/card")
-    public ResponseEntity<ApiResponse<CardOverviewDto>> getCard(@PathVariable Long id) {
-        CardOverviewDto cardOverviewDto = accountService.getCardByAccountId(id);
-        return ResponseEntity.ok(ApiResponse.success(cardOverviewDto));
+    public ResponseEntity<ApiResponse<Set<CardOverviewDto>>> getCards(@PathVariable Long id) {
+        Set<CardOverviewDto> cards = accountService.getCardsByAccountId(id);
+        return ResponseEntity.ok(ApiResponse.success(cards));
     }
 
     @GetMapping("{id}/customer")
@@ -90,12 +91,6 @@ public class AccountController {
     public ResponseEntity<ApiResponse<AccountBalanceDto>> getAccountBalance(@PathVariable Long id) {
         AccountBalanceDto balanceDto = accountService.getAccountBalance(id);
         return ResponseEntity.ok(ApiResponse.success(balanceDto));
-    }
-
-    @GetMapping("{id}/balance/available")
-    public ResponseEntity<ApiResponse<BigDecimal>> getAvailableBalance(@PathVariable Long id) {
-        BigDecimal availableBalance = accountService.getAvailableBalance(id);
-        return ResponseEntity.ok(ApiResponse.success(availableBalance, "Available balance retrieved successfully"));
     }
 
     @GetMapping("{id}/balance/can-withdraw")

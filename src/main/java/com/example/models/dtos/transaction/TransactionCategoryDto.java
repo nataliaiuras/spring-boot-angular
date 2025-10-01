@@ -14,6 +14,6 @@ public class TransactionCategoryDto {
     private BigDecimal totalAmount;
     private Integer transactionCount;
     private BigDecimal averageAmount;
-    private Double percentage; // Percentage of total spending
+    private Double percentage;
 }
 

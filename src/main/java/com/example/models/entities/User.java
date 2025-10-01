@@ -1,8 +1,8 @@
 package com.example.models.entities;
 
-import com.example.utils.MaskSensitive;
 import com.example.utils.enums.Role;
-import com.example.utils.SensitiveDataSerializer;
+import com.example.utils.mask.MaskSensitive;
+import com.example.utils.mask.SensitiveDataSerializer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
@@ -43,7 +43,7 @@ public class User implements Serializable {
     @Column(nullable = false)
     @NotNull
     @Size(min = 60, max = 60) // For BCrypt
-    @MaskSensitive(maskWith = "*******")
+    @MaskSensitive(type = MaskSensitive.SensitiveDataType.PASSWORD)
     @JsonSerialize(using = SensitiveDataSerializer.class)
     private String password;
 

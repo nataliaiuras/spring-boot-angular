@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 public interface AccountService {
 
@@ -23,13 +24,11 @@ public interface AccountService {
 
     void deleteAccount(Long id);
 
-    CardOverviewDto getCardByAccountId(Long id);
+    Set<CardOverviewDto> getCardsByAccountId(Long id);
 
     CustomerOverviewDto getCustomerByAccountId(Long id);
 
     AccountBalanceDto getAccountBalance(Long id);
-
-    BigDecimal getAvailableBalance(Long id);
 
     boolean canWithdraw(Long id, BigDecimal amount);
 

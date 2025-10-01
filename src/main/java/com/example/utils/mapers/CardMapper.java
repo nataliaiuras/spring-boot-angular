@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.Set;
+
 @Mapper(componentModel = "spring")
 public interface CardMapper {
 
@@ -26,4 +28,6 @@ public interface CardMapper {
 
 
     CardOverviewDto toCardOverviewDto(Card card);
+
+    Set<CardOverviewDto> toOverviewDtos(Set<Card> cards);
 }

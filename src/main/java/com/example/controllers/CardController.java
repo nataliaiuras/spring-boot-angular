@@ -1,11 +1,10 @@
 package com.example.controllers;
 
-import com.example.models.dtos.card.CardDto;
-import com.example.models.dtos.account.AccountOverviewDto;
-import com.example.models.dtos.card.CardOverviewDto;
 import com.example.exceptions.response.ApiResponse;
+import com.example.models.dtos.account.AccountOverviewDto;
+import com.example.models.dtos.card.CardDto;
+import com.example.models.dtos.card.CardOverviewDto;
 import com.example.services.CardService;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -51,29 +50,55 @@ public class CardController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CardDto>> createCard(@Valid @RequestBody CardDto cardDto) {
-        CardDto createdCard = cardService.createCard(cardDto);
+    public ResponseEntity<ApiResponse<CardDto>> issueCard(@RequestParam Long accountId) {
+        CardDto issuedCard = cardService.issueCard(accountId);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(createdCard.getId())
+                .buildAndExpand(issuedCard.getId())
                 .toUri();
         return ResponseEntity
                 .created(location)
-                .body(ApiResponse.success(createdCard, "Card created successfully"));
+                .body(ApiResponse.success(issuedCard, "Card issued successfully"));
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<CardDto>> updateCard(@PathVariable Long id,
-                                                           @Valid @RequestBody CardDto cardDto) {
-        CardDto updateCard = cardService.updateCard(id, cardDto);
-        return ResponseEntity.ok(ApiResponse.success(updateCard, "Card updated successfully"));
+    @PostMapping("{id}/reissue")
+    public ResponseEntity<ApiResponse<CardDto>> reissueCard(@PathVariable Long id) {
+        CardDto reissuedCard = cardService.reissueCard(id);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(reissuedCard.getId())
+                .toUri();
+        return ResponseEntity
+                .created(location)
+                .body(ApiResponse.success(reissuedCard, "Card reissued successfully"));
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<ApiResponse<String>> deleteCard(@PathVariable Long id) {
-        cardService.deleteCard(id);
-        return ResponseEntity.ok(ApiResponse.success("Card  deleted successfully"));
+    @PutMapping("{id}/activate")
+    public ResponseEntity<ApiResponse<String>> activateCard(@PathVariable Long id) {
+        cardService.activateCard(id);
+        return ResponseEntity.ok(ApiResponse.success("Card activated successfully"));
+    }
+
+    @PutMapping("{id}/block")
+    public ResponseEntity<ApiResponse<String>> blockCard(@PathVariable Long id) {
+        cardService.blockCard(id);
+        return ResponseEntity.ok(ApiResponse.success("Card blocked successfully"));
+    }
+
+    @PutMapping("{id}/unblock")
+    public ResponseEntity<ApiResponse<String>> unblockCard(@PathVariable Long id) {
+        cardService.unblockCard(id);
+        return ResponseEntity.ok(ApiResponse.success("Card unblocked successfully"));
+    }
+
+    @PutMapping("{id}/pin")
+    public ResponseEntity<ApiResponse<String>> changePIN(@PathVariable Long id,
+                                                         @RequestParam String oldPin,
+                                                         @RequestParam String newPin) {
+        cardService.changePIN(id, oldPin, newPin);
+        return ResponseEntity.ok(ApiResponse.success("PIN changed successfully"));
     }
 
 
