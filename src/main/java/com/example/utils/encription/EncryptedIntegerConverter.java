@@ -1,4 +1,4 @@
-package com.example.utils;
+package com.example.utils.encription;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

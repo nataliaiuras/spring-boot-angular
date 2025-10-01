@@ -1,5 +1,6 @@
 package com.example.models.dtos.account;
 
+import com.example.models.dtos.branch.BranchOverviewDto;
 import com.example.models.dtos.card.CardOverviewDto;
 import com.example.models.dtos.common.MetadataDto;
 import com.example.models.dtos.customer.CustomerOverviewDto;
@@ -11,6 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +29,7 @@ public class AccountDto {
     private BigDecimal balance;
     private boolean active;
     private CustomerOverviewDto customer;
-    private CardOverviewDto card;
+    private Set<CardOverviewDto> cards = new HashSet<>();
     private MetadataDto metadata;
 
 }

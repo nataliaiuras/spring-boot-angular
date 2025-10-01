@@ -21,6 +21,12 @@ public interface AccountMapper {
     @Mapping(target = "lastModifiedDate", ignore = true)
     Account toAccount(AccountDto accountDto);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "lastModifiedDate", ignore = true)
+    Account toAccount(AccountOverviewDto accountOverviewDto);
+
     AccountDto toAccountDto(Account account);
 
     AccountDto toAccountDto(AccountRequestDto dto);

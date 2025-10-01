@@ -1,6 +1,8 @@
 package com.example.services.impl;
 
 import com.example.config.service.IbanGeneratorService;
+import com.example.exceptions.BusinessException;
+import com.example.exceptions.domain.customer.CustomerNotFoundException;
 import com.example.models.dtos.account.AccountBalanceDto;
 import com.example.models.dtos.account.AccountDto;
 import com.example.models.dtos.account.AccountOverviewDto;
@@ -11,6 +13,7 @@ import com.example.models.entities.Account;
 import com.example.models.entities.Card;
 import com.example.models.entities.Customer;
 import com.example.exceptions.domain.account.AccountNotFoundException;
+import com.example.repository.CustomerRepository;
 import com.example.utils.mapers.AccountMapper;
 import com.example.utils.mapers.CardMapper;
 import com.example.utils.mapers.CustomerMapper;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -37,6 +41,7 @@ public class AccountServiceImpl implements AccountService {
     private final CardMapper cardMapper;
     private final CustomerMapper customerMapper;
     private final IbanGeneratorService ibanGenerator;
+    private final CustomerRepository customerRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -47,6 +52,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public AccountDto createAccount(AccountRequestDto dto) {
+        Customer customer = customerRepository.findById(dto.getCustomerId())
+                .orElseThrow(() -> new CustomerNotFoundException(dto.getCustomerId()));
         Account account = accountMapper.toAccount(dto);
 
         String accountNumber = generateAccountNumber();
@@ -58,16 +65,23 @@ public class AccountServiceImpl implements AccountService {
         account.setBalance(BigDecimal.ZERO);
         account.setActive(true);
 
+        account.setCustomer(customer);
+        customer.getAccounts().add(account);
+
         Account savedAccount = accountRepository.save(account);
         return accountMapper.toAccountDto(savedAccount);
     }
 
     private String generateAccountNumber() {
-        BigInteger nextVal = (BigInteger) entityManager
+        Long nextVal = (Long) entityManager
                 .createNativeQuery("SELECT NEXTVAL('account_number_seq')")
                 .getSingleResult();
-
-        return String.format("%012d", nextVal.longValue());
+        if (accountRepository.existsByAccountNumber(nextVal.toString())) {
+            nextVal = (Long) entityManager
+                    .createNativeQuery("SELECT NEXTVAL('account_number_seq')")
+                    .getSingleResult();
+        }
+        return String.format("%012d", nextVal);
     }
 
     public Account findAccountById(Long id) {
@@ -92,10 +106,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public CardOverviewDto getCardByAccountId(Long id) {
+    public Set<CardOverviewDto> getCardsByAccountId(Long id) {
         Account account = findAccountById(id);
-        Card card = account.getCard();
-        return cardMapper.toCardOverviewDto(card);
+        Set<Card> cards = account.getCards();
+        return cardMapper.toOverviewDtos(cards);
     }
 
     @Override
@@ -109,12 +123,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountBalanceDto getAccountBalance(Long id) {
         Account account = findAccountById(id);
         return accountMapper.toAccountBalanceDto(account);
-    }
-
-    @Override
-    public BigDecimal getAvailableBalance(Long id) {
-        Account account = findAccountById(id);
-        return account.getBalance();
     }
 
     @Override

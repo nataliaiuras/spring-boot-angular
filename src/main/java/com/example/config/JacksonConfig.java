@@ -1,4 +1,4 @@
-package com.example.utils;
+package com.example.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
