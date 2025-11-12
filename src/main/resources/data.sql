@@ -19,7 +19,7 @@ INSERT INTO branches (id, bic_code, swift_code, address_id, telephone_number, em
 (3, 'SBNYUS33', 'SBNYUS33XXX', 3, '987-654-3211', 'branch1@secondbank.com', 2),
 (4, 'TBNYUS33', 'TBNYUS33XXX', 4, '555-123-4568', 'branch1@thirdbank.com', 3);
 
--- Insert sample data for Clients (linked to Branches)
+-- Insert sample data for ClientListComponent (linked to Branches)
 INSERT INTO clients (id, first_name, last_name, birth_date, cnp, telephone_number, email, created_date, branch_id) VALUES
 (1, 'John', 'Doe', '1980-01-01', '1800101123456', '555-111-2222', 'john.doe@example.com', '2023-01-01', 1),
 (2, 'Jane', 'Smith', '1985-05-15', '2850515123456', '555-222-3333', 'jane.smith@example.com', '2023-01-02', 1),
@@ -27,7 +27,7 @@ INSERT INTO clients (id, first_name, last_name, birth_date, cnp, telephone_numbe
 (4, 'Alice', 'Williams', '1975-03-25', '2750325123456', '555-444-5555', 'alice.williams@example.com', '2023-01-04', 3),
 (5, 'Charlie', 'Brown', '1982-07-30', '1820730123456', '555-555-6666', 'charlie.brown@example.com', '2023-01-05', 4);
 
--- Insert sample data for Accounts (linked to Clients)
+-- Insert sample data for AccountListComponent (linked to ClientListComponent)
 INSERT INTO accounts (id, account_number, type, iban_code, balance, client_id) VALUES
 (1, 'ACC001', 'SAVINGS', 'US123456789012345678901234', 5000.00, 1),
 (2, 'ACC002', 'CURRENT', 'US234567890123456789012345', 2500.00, 1),
@@ -36,7 +36,7 @@ INSERT INTO accounts (id, account_number, type, iban_code, balance, client_id) V
 (5, 'ACC005', 'CURRENT', 'US567890123456789012345678', 3000.00, 4),
 (6, 'ACC006', 'SAVINGS', 'US678901234567890123456789', 10000.00, 5);
 
--- Insert sample data for Cards (linked to Accounts)
+-- Insert sample data for CardComponent (linked to AccountListComponent)
 INSERT INTO cards (id, card_number, card_holder, valid_thru, cvv_code, pin, account_id) VALUES
 (1, '1234-5678-9012-3456', 'John Doe', '2025-12-31', 123, 1234, 1),
 (2, '2345-6789-0123-4567', 'John Doe', '2025-12-31', 234, 2345, 2),
@@ -45,7 +45,7 @@ INSERT INTO cards (id, card_number, card_holder, valid_thru, cvv_code, pin, acco
 (5, '5678-9012-3456-7890', 'Alice Williams', '2026-06-30', 567, 5678, 5),
 (6, '6789-0123-4567-8901', 'Charlie Brown', '2026-06-30', 678, 6789, 6);
 
--- Insert sample data for Credentials (linked to Accounts)
+-- Insert sample data for Credentials (linked to AccountListComponent)
 INSERT INTO credentials (id, username, password, account_id) VALUES
 (1, 'johndoe', 'password123', 1),
 (2, 'janesmith', 'password456', 3),

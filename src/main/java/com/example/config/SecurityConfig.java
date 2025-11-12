@@ -1,7 +1,7 @@
 package com.example.config;
 
 import com.example.config.security.JwtFilter;
-import com.example.services.impl.CustomUserDetailsService;
+import com.example.service.impl.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

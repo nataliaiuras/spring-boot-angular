@@ -1,0 +1,100 @@
+<div class="container">
+  @if (loading) {
+    <div class="loading">
+      <p>Loading institute details details...</p>
+    </div>
+  }
+  @if (error) {
+    <div>
+      <p>Error loading institute details. Please try again later.</p>
+      <button mat-raised-button color="primary" (click)="goBack()">Back to InstituteListComponent</button>
+    </div>
+  }
+  @if (!loading && !error && instituteDetail) {
+    <mat-card class="instituteDetail-card">
+      <mat-card-actions>
+        <button mat-raised-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </button>
+        <button mat-raised-button color="primary" (click)="openUpdateForm()">
+          <mat-icon>edit</mat-icon>
+          Update
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteInstitute()">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </mat-card-actions>
+      <mat-card-header>
+        <mat-card-title>{{ instituteDetail.name }}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="detail-row">
+          <p class="value">ID:</p>
+          <p>{{ instituteDetail.id }}</p>
+        </div>
+
+        <div class="detail-row">
+          <p class="value">Institute Code:</p>
+          <p>{{ instituteDetail.bankCode }}</p>
+        </div>
+
+        <div class="detail-row">
+          <p class="value">Website:</p>
+          <p>{{ instituteDetail.website }}</p>
+        </div>
+
+        <div class="detail-row">
+          <p class="value">Created Date:</p>
+          <p>{{ instituteDetail.createdDate | date:'medium' }}</p>
+        </div>
+
+        <div class="detail-row">
+          <p class="value">Last Modified:</p>
+          <p>{{ instituteDetail.lastModifiedDate | date:'medium' }}</p>
+        </div>
+
+        <div class="detail-row">
+          <p class="value">Version:</p>
+          <p>{{ instituteDetail.version }}</p>
+        </div>
+      </mat-card-content>
+
+       <!-- <div class="detail-row">-->
+          <!--<p class="value">Branches</p>
+          <p>{{ instituteDetail.branches.length }}</p>-->
+          @if (instituteDetail.branches.length > 0) {
+            <mat-accordion>
+              <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>Branches</mat-panel-title>
+                  <!--  <mat-panel-description>
+                      Currently I am {{ panelOpenState() ? 'open' : 'closed' }}
+                    </mat-panel-description>-->
+                </mat-expansion-panel-header>
+                @if (!loading && !error && instituteDetail) {
+                  @for (branch of branches; track branch.name) {
+                    <p>{{ branch.name }}</p>
+                  } @empty {
+                    <p>There are no items.</p>
+                  }
+                  <!--  <div @for(let branch of branches)>
+                      &lt;!&ndash; <p>Branch ID: {{ branch.id }}</p>
+                       <p>Branch Branch Code: {{ branch.branchCode }}</p>
+                       <p>Branch Location Code: {{ branch.locationCode }}</p>
+                       <p>Branch Bic Code: {{ branch.bicCode }}</p>&ndash;&gt;
+                      <p>&lt;!&ndash;Branch Name: &ndash;&gt;{{ branch.name }}</p>
+                      &lt;!&ndash; <p>Branch Phone Number: {{ branch.phoneNumber }}</p>&ndash;&gt;
+                    </div>-->
+                }
+              </mat-expansion-panel>
+            </mat-accordion>
+          }
+       <!-- </div>-->
+
+    </mat-card>
+
+  }
+</div>

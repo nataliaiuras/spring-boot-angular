@@ -1,6 +1,6 @@
 package com.example.config.security;
 
-import com.example.models.entities.User;
+import com.example.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

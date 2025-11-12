@@ -1,6 +1,6 @@
 package com.example.config.security;
 
-import com.example.services.impl.CustomUserDetailsService;
+import com.example.service.impl.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;

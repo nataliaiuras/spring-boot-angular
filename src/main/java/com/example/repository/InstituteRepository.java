@@ -1,7 +1,7 @@
 package com.example.repository;
 
 
-import com.example.models.entities.Institute;
+import com.example.entity.Institute;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>{{ data ? 'Edit' : 'Add' }}</h2>
+
+<form [formGroup]="instituteForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Bank Code</mat-label>
+    <input matInput formControlName="bankCode"/>
+    @if (instituteForm.controls['bankCode'].hasError('required')) {
+      <mat-error>Bank code is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name"/>
+    @if (instituteForm.controls['name'].hasError('required')) {
+      <mat-error>Name is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Website</mat-label>
+    <input matInput formControlName="website"/>
+    @if (instituteForm.controls['website'].hasError('required')) {
+      <mat-error>Website is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="instituteForm.invalid">Save</button>
+  </mat-dialog-actions>
+</form>
