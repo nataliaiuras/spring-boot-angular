@@ -1,0 +1,53 @@
+<div class="example-container" [class.example-is-mobile]="isMobile()">
+  <mat-toolbar class="example-toolbar">
+    <div class="toolbar-left">
+      <button matIconButton (click)="snav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+
+    <div class="toolbar-right">
+      <button class="user-menu-button" matButton [matMenuTriggerFor]="userMenu">
+        {{ currentUser?.username || 'User' }}
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu" class="mat-menu-user-menu">
+       <div class="user-menu-header">
+         Role: <strong>{{ currentUser?.role }}</strong>
+        </div>
+        <div class="user-menu-header">
+         Enabled: <strong>{{ currentUser?.enabled }}</strong>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          Logout
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="example-sidenav-container"
+                         [style.marginTop.px]="isMobile() ? 56 : 0">
+    <mat-sidenav #snav [mode]="isMobile() ? 'over' : 'side'"
+                 [fixedInViewport]="isMobile()" fixedTopGap="56">
+      <mat-nav-list>
+        <a mat-list-item [routerLink]="['/api/dashboard']" routerLinkActive="active">Dashboard</a>
+        <a mat-list-item [routerLink]="['/auth/users']" routerLinkActive="active">Users</a>
+        <a mat-list-item [routerLink]="['/auth/profile']" routerLinkActive="active">Profile</a>
+        <a mat-list-item [routerLink]="['/api/institute']" routerLinkActive="active">Institute</a>
+        <a mat-list-item [routerLink]="['/api/branches']" routerLinkActive="active">Branch</a>
+        <a mat-list-item [routerLink]="['/api/addresses']" routerLinkActive="active">Address</a>
+        <a mat-list-item [routerLink]="['/api/clients']" routerLinkActive="active">Client</a>
+        <a mat-list-item [routerLink]="['/api/accounts']" routerLinkActive="active">Account</a>
+        <a mat-list-item [routerLink]="['/api/cards']" routerLinkActive="active">Card</a>
+        <a mat-list-item [routerLink]="['/api/transactions']" routerLinkActive="active">Transaction</a>
+        <a mat-list-item (click)="logout()">Logout</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

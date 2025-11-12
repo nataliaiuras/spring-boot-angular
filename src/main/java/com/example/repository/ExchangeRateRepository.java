@@ -1,8 +1,8 @@
 
 package com.example.repository;
 
-import com.example.models.entities.ExchangeRate;
-import com.example.utils.enums.CurrencyType;
+import com.example.entity.ExchangeRate;
+import com.example.util.enums.CurrencyType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,0 +1,55 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h2>User Profile</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Loading user information...
+  </div>
+
+  <div *ngIf="!loading && !currentUser" class="error">
+    No user information available.
+  </div>
+
+  <div *ngIf="!loading && currentUser" class="user-info">
+    <div class="info-card">
+      <div class="info-row">
+        <label>User ID:</label>
+        <span>{{ currentUser.id }}</span>
+      </div>
+
+      <div class="info-row">
+        <label>Username:</label>
+        <span>{{ currentUser.username }}</span>
+      </div>
+
+      <div class="info-row">
+        <label>Role:</label>
+        <span>{{ currentUser.role }}</span>
+      </div>
+
+      <div class="info-row">
+        <label>Status:</label>
+        <span [class.enabled]="currentUser.enabled" [class.disabled]="!currentUser.enabled">
+          {{ currentUser.enabled ? 'Enabled' : 'Disabled' }}
+        </span>
+      </div>
+
+      <div class="info-row">
+        <label>Created Date:</label>
+        <span>{{ currentUser.createdDate | date:'medium' }}</span>
+      </div>
+
+      <div class="info-row" *ngIf="currentUser.lastModifiedDate">
+        <label>Last Modified:</label>
+        <span>{{ currentUser.lastModifiedDate | date:'medium' }}</span>
+      </div>
+
+      <div class="info-row" *ngIf="currentUser.version">
+        <label>Version:</label>
+        <span>{{ currentUser.version }}</span>
+      </div>
+
+    </div>
+  </div>
+</div>

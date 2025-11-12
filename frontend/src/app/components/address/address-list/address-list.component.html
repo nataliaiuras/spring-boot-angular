@@ -1,0 +1,44 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Address Line 1</th>
+      <th>City</th>
+      <th>Postal Code</th>
+      <th>Country Code</th>
+     <!-- <th>Address Type</th>-->
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let address of addressList">
+      <td>{{ address.id }}</td>
+      <td>{{ address.addressLine1 }}</td>
+      <td>{{ address.city }}</td>
+      <td>{{ address.postalCode }}</td>
+      <td>{{ address.countryCode }}</td>
+     <!-- <td>{{ address.addressType }}</td>-->
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<nav [@if]="totalItems > pageSize">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a class="page-link" (click)="onPageChange(currentPage - 1)">Previous</a>
+    </li>
+
+    <li
+      class="page-item"
+      *ngFor="let page of [].constructor(Math.ceil(totalItems / pageSize)); let i = index"
+      [class.active]="currentPage === i + 1">
+      <a class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</a>
+    </li>
+
+    <li class="page-item" [class.disabled]="currentPage === Math.ceil(totalItems / pageSize)">
+      <a class="page-link" (click)="onPageChange(currentPage + 1)">Next</a>
+    </li>
+  </ul>
+</nav>
