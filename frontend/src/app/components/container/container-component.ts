@@ -38,7 +38,7 @@ import {UserService} from '../../services/user/user-service';
 })
 export class ContainerComponent implements OnDestroy, OnInit {
 
-  protected readonly fillerNav = ['Vehicles', 'Posts', 'Calendar', 'Documents', 'Reports', 'Tasks', 'Settings', 'Help', 'Logout'];
+  protected readonly fillerNav = ['Calendar', 'Documents', 'Reports', 'Tasks', 'Settings', 'Help', 'Logout'];
 
   protected readonly isMobile = signal(true);
 

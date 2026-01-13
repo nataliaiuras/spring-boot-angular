@@ -52,11 +52,13 @@ public class AccountServiceImpl implements AccountService {
     private EntityManager entityManager;
 
 
+    @Override
     public Page<AccountResponse> getAllAccounts(Pageable pageable) {
         Page<Account> accountPage = accountRepository.findAll(pageable);
         return accountPage.map(accountMapper::toAccountResponse);
     }
 
+    @Override
     public AccountDetailResponse createAccount(AccountCreateRequest request) {
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(request.getCustomerId()));
@@ -110,11 +112,13 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(id));
     }
 
+    @Override
     public AccountResponse getAccountById(Long id) {
         Account account = findAccountById(id);
         return accountMapper.toAccountResponse(account);
     }
 
+    @Override
     public AccountDetailResponse updateAccount(Long id, AccountUpdateRequest request) {
         Account account = findAccountById(id);
         accountMapper.updateAccount(account, accountMapper.toAccount(request));
@@ -122,10 +126,12 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountDetailResponse(saved);
     }
 
+    @Override
     public void deleteAccount(Long id) {
         accountRepository.delete(findAccountById(id));
     }
 
+    @Override
     public void deactivateAccount(Long id) {
         Account account = findAccountById(id);
         account.setActive(false);

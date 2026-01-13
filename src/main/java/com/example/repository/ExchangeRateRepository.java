@@ -23,7 +23,7 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
         ORDER BY er.effectiveDate DESC 
         LIMIT 1
         """)
-    Optional<ExchangeRate> findLatestRateBycurrencies(
+    Optional<ExchangeRate> findLatestRateByCurrencies(
         @Param("baseCurrency") CurrencyType baseCurrency,
         @Param("targetCurrency") CurrencyType targetCurrency,
         @Param("effectiveDate") Instant effectiveDate

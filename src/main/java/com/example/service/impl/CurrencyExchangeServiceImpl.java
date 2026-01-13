@@ -27,7 +27,7 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         }
         
         return exchangeRateRepository
-            .findLatestRateBycurrencies(fromCurrency, toCurrency, Instant.now())
+            .findLatestRateByCurrencies(fromCurrency, toCurrency, Instant.now())
             .map(ExchangeRate::getRate)
             .orElseThrow(() -> new RuntimeException(
                 "Exchange rate not found for " + fromCurrency + " to " + toCurrency));

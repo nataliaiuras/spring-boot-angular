@@ -4,6 +4,9 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {BranchResponse} from '../../core/models/response/branch/branch-response';
 import {CustomerResponse} from '../../core/models/response/customer/customer-response';
 import {AddressResponse} from '../../core/models/response/address/address-response';
+import {ApiResponse} from '../../core/models/response/general/api-response';
+import {Page} from '../../core/models/response/general/page';
+import {InstituteResponse} from '../../core/models/response/institute/institute.response';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +25,19 @@ export class BranchService {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': `Bearer ${token}`
+    });
+  }
+
+  getAllBranches(page: number = 0, size: number = 10, sortBy: string = 'id', sortDir: string = 'asc'): Observable<ApiResponse<Page<BranchResponse>>> {
+    const params = {
+      page: page.toString(),
+      size: size.toString(),
+      sortBy,
+      sortDir
+    };
+    return this.http.get<ApiResponse<Page<BranchResponse>>>(this.baseUrl, {
+      params,
+      headers: this.getHeaders()
     });
   }
 
